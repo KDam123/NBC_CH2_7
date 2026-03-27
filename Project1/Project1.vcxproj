@@ -102,6 +102,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir); $(ProjectDir)Characters; $(ProjectDir)Items;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -123,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+<<<<<<< HEAD
     <ClInclude Include="DropTable.h" />
     <ClInclude Include="Goblin.h" />
     <ClInclude Include="Item.h" />
@@ -137,6 +140,20 @@
     <ClCompile Include="Orc.cpp" />
     <ClCompile Include="Slime.cpp" />
     <ClCompile Include="Troll.cpp" />
+=======
+    <ClCompile Include="Items\AttackBoost.cpp" />
+    <ClCompile Include="Characters\Character.cpp" />
+    <ClCompile Include="Items\HealthPotioin.cpp" />
+    <ClCompile Include="Items\ItemFactory.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Items\AttackBoost.h" />
+    <ClInclude Include="Characters\Character.h" />
+    <ClInclude Include="Items\HealthPotion.h" />
+    <ClInclude Include="Items\Item.h" />
+    <ClInclude Include="Items\ItemFactory.h" />
+>>>>>>> 66fa6f291e3f3c97c27bae2ad947a7436f97c94c
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
