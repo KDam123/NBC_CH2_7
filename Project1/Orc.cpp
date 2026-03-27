@@ -13,8 +13,9 @@ Orc::Orc(int level) : Monster(level) {
 
 
 
-void Orc::takeDamage(int damage) {
+void Orc::TakeDamage(int damage) {
 
     health -= damage;
+    if (health < 0)health = 0;
 
 }

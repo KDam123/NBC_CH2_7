@@ -12,8 +12,10 @@ Slime::Slime(int level) : Monster(level) {
 }
 
 
-void Slime::takeDamage(int damage) {
+void Slime::TakeDamage(int damage) {
     health -= damage;
+
+    if (health < 0)health = 0;
 
 
 }

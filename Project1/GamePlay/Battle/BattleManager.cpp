@@ -6,6 +6,7 @@
 #include "Common/common.h"
 #include "Items/HealthPotion.h"
 #include "Items/AttackBoost.h"
+#include "Orc.h"
 
 
 BattleManager::BattleManager(Character* p) : player(p)

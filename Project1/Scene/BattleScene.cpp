@@ -4,6 +4,7 @@
 #include "UI/UIManager.h"
 #include "Characters/Character.h"
 #include "Monster.h"
+#include "Orc.h"
 
 constexpr int MIN_MONSTER_COUNT = 1;
 constexpr int MAX_MONSTER_COUNT = 3;
@@ -18,7 +19,7 @@ void BattleScene::Init()
 
 	int monster_count = RandomUtil::GetRange(MIN_MONSTER_COUNT, MAX_MONSTER_COUNT);
 	for (int i = 0; i < monster_count; ++i) {
-		monsters.push_back(std::make_unique<Monster>());
+		monsters.push_back(std::make_unique<Orc>(player->GetLevel()));
 	}
 
 	if (!battle_manager || monsters.empty()) {

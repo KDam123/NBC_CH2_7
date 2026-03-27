@@ -9,48 +9,58 @@ using namespace std;
 
 class Monster {
 public:
-	Monster(int level) : level(level), health(1), attack(1){}
+	Monster(int level) : level(level), health(1), attack(1), maxhealth(1),Isvisible(true){}
     virtual ~Monster(){}
-    virtual void takeDamage(int damage) = 0;
+    virtual void TakeDamage(int damage) = 0;
     virtual vector<ItemID> getDropItems() {
         return droptable.drop();
     }
+
+    
 
     bool IsDead() const { return health <= 0; };
 
     //getter 함수
 
-    string getName() const {
+    string GetName() const {
         return name;
     }
 
-    int getHealth() const {
+    int GetHealth() const {
         return health;
     }
 
-    int getAttack() const {
+    int GetAttack() const {
         return attack;
     }
 
-    int getLevel() const {
+    int GetLevel() const {
         return level;
+    }
+
+    int GetMaxHealth() const {
+        return maxhealth;
     }
 
     // setter 함수
 
-    void setName(const string &name) {
+    void SetVisible(bool visible) {
+        this->Isvisible = visible;
+    };
+
+    void SetName(const string &name) {
         this->name = name;
     }
 
-    void setHealth(int health) {
+    void SetHealth(int health) {
         this->health = health;
     }
 
-    void setAttack(int attack) {
+    void SetAttack(int attack) {
         this->attack = attack;
     }
 
-    void setLevel(int level) {
+    void SetLevel(int level) {
         this->level = level;
     }
 
@@ -62,6 +72,7 @@ protected:
     int attack;
     int level;
     DropTable droptable;
-
+    bool Isvisible;
+    int maxhealth;
 };
 

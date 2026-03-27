@@ -8,5 +8,5 @@ class Slime : public Monster {
 
 public:
 	Slime(int level);
-	void takeDamage(int damage) override;
+	void TakeDamage(int damage) override;
 };

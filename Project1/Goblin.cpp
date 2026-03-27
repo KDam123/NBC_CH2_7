@@ -13,6 +13,7 @@ Goblin::Goblin(int level) : Monster(level){
     droptable.addItem(ItemID::AttackBoost, 0.5);
 }
 
-void Goblin::takeDamage(int damage) {
+void Goblin::TakeDamage(int damage) {
     health -= damage;
+    if (health < 0)health = 0;
 }

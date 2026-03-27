@@ -8,5 +8,5 @@ class Orc : public Monster {
 
 public:
 	Orc(int level);
-	void takeDamage(int damage) override;
+	void TakeDamage(int damage) override;
 };
