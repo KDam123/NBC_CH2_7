@@ -1,6 +1,8 @@
 #pragma once
 #include "Common/common.h"
 #include "BaseUI.h"
+#include <vector>
+#include <memory>
 
 class UIManager 
 {
@@ -22,9 +24,11 @@ public:
     void Render();  // 로그, 선택지 그리기
     void SetVisible(UIType type, bool value);
     void SetAllVisible(bool value = true);
+    void NextPageItemUI();
+    void PrevPageItemUI();
 
 private:
-    std::vector<std::unique_ptr<BaseUI>> ui_list;
+    std::vector<std::unique_ptr<BaseUI>> uis;
 
     // 외부에서 new 못하도록 차단
     UIManager();

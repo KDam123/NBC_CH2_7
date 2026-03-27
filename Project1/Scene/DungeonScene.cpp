@@ -1,16 +1,19 @@
 #include "DungeonScene.h"
 #include "UI/UIManager.h"
+#include "UI/GameUI.h"
 #include "Core/RenderSystem.h"
+
 
 void DungeonScene::Init()
 {
-    SetUI();
+    // -----------
+    //배경
+    auto bg = std::make_unique<AsciiUI>(0, 0);
+    bg->LoadAsciiArt("bg.txt");
+    scene_uis.push_back(std::move(bg));
+
+
     SetMenu();
-}
-
-void DungeonScene::SetUI()
-{
-
 }
 
 void DungeonScene::SetMenu()
@@ -36,6 +39,16 @@ void DungeonScene::ProcessEvent(const Event& e)
             ChangeScene(SceneType::Town);
             break;
 
+        case 'q':
+        case 'Q':
+            UIManager::GetInstance().PrevPageItemUI();
+            break;
+
+        case 'e':
+        case 'E':
+            UIManager::GetInstance().NextPageItemUI();
+            break;
+
         default:
             UIManager::GetInstance().AddMessage(UIType::Menu, "잘못된 입력입니다.");
             break;
@@ -45,11 +58,6 @@ void DungeonScene::ProcessEvent(const Event& e)
 
 void DungeonScene::Update(float delta_time)
 {
-}
-
-void DungeonScene::Render()
-{
-    
 }
 
 void DungeonScene::Release()

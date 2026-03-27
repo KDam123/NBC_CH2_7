@@ -7,13 +7,7 @@
 
 void TownScene::Init()
 {
-    SetUI();
     SetMenu();
-}
-
-void TownScene::SetUI()
-{
-    
 }
 
 void TownScene::SetMenu()
@@ -31,12 +25,22 @@ void TownScene::ProcessEvent(const Event& e)
         switch (e.key_code) {
         case '1':
             UIManager::GetInstance().AddMessage(UIType::Log, "[휴식] 여관에서 푹 쉬었습니다. (HP 회복)");
-            SetUI();
+            // 회복 처리
             break;
 
         case '2':
             UIManager::GetInstance().AddMessage(UIType::Log, "[이동] 어두운 던전으로 향합니다...");
             ChangeScene(SceneType::Dungeon);
+            break;
+
+        case 'q':
+        case 'Q':
+            UIManager::GetInstance().PrevPageItemUI();
+            break;
+
+        case 'e':
+        case 'E':
+            UIManager::GetInstance().NextPageItemUI();
             break;
 
         default:
@@ -48,11 +52,6 @@ void TownScene::ProcessEvent(const Event& e)
 
 void TownScene::Update(float delta_time)
 {
-}
-
-void TownScene::Render()
-{
-    
 }
 
 void TownScene::Release()

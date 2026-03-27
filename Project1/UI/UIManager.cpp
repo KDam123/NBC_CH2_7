@@ -8,17 +8,35 @@ UIManager::UIManager()
     int w = RenderSystem::GetInstance().GetScreenWidth();
     int h = RenderSystem::GetInstance().GetScreenHeight();
 
-    int msg_width = static_cast<int>(w * 0.7f);
-    int msg_height = static_cast<int>(h * 0.2f);
-    int msg_x = 0;
-    int msg_y = h - msg_height;
-    ui_list.push_back(std::make_unique<MessageUI>(msg_x, msg_y, msg_width, msg_height));
+    // 메뉴 좌하단 시작 길이 0.7, 높이 0.2
+    int menu_width = static_cast<int>(w * 0.7f);
+    int menu_height = static_cast<int>(h * 0.2f);
+    int menu_x = 0;
+    int menu_y = h - menu_height;
+    uis.push_back(std::make_unique<BorderUI>(menu_x, menu_y, menu_width, menu_height));
 
-    int log_width = w - msg_width - 1;
-    int log_height = h;
-    int log_x = msg_width;
-    int log_y = 0;
-    ui_list.push_back(std::make_unique<LogUI>(log_x, log_y, log_width, log_height));
+    // 우측 영역 변수
+    int right_area_width = w - menu_width - 1;
+    int right_area_x = menu_width;
+
+
+    // 인포
+    int info_width = right_area_width / 2;
+    int info_height = static_cast<int>(h * 0.2f);
+    int info_y = 0;
+    uis.push_back(std::make_unique<CharacterInfoUI>(right_area_x, info_y, right_area_width, info_height));
+    
+
+    // 로그  높이 0.45
+    int log_height = static_cast<int>(h * 0.45f);
+    int log_y = h - log_height;
+    uis.push_back(std::make_unique<LogUI>(right_area_x, log_y, right_area_width, log_height));
+
+
+    // 아이템
+    int item_height = h - info_height - log_height;
+    uis.push_back(std::make_unique<ItemUI>(right_area_x, info_height, right_area_width, item_height));
+
 }
 
 UIManager::~UIManager()
@@ -30,7 +48,7 @@ void UIManager::AddMessage(UIType type, std::string_view msg)
     size_t idx = static_cast<size_t>(type);
 
     if (idx < static_cast<size_t>(UIType::COUNT)) {
-        ui_list[idx]->AddMessage(msg);
+        uis[idx]->AddContents(msg);
     }
 }
 
@@ -39,7 +57,7 @@ void UIManager::ClearMessage(UIType type)
     size_t idx = static_cast<size_t>(type);
 
     if (idx < static_cast<size_t>(UIType::COUNT)) {
-        ui_list[idx]->Clear();
+        uis[idx]->Clear();
     }
 }
 
@@ -53,14 +71,14 @@ void UIManager::ClearAll(const std::vector<UIType>& ignores)
             continue;
         }
 
-        ui_list[i]->Clear();
+        uis[i]->Clear();
     }
 }
 
 void UIManager::Render()
 {
     // 로그ui, 메세지ui 등 전역 ui 그리기
-    for (const auto& ui : ui_list) {
+    for (const auto& ui : uis) {
         if (ui->IsVisible()) {
             ui->Render();
         }
@@ -71,13 +89,25 @@ void UIManager::SetVisible(UIType type, bool value)
 {
     size_t idx = static_cast<size_t>(type);
     if (idx < static_cast<size_t>(UIType::COUNT)) {
-        ui_list[idx]->SetVisible(value);
+        uis[idx]->SetVisible(value);
     }
 }
 
 void UIManager::SetAllVisible(bool value)
 {
-    for (auto& ui : ui_list) {
+    for (auto& ui : uis) {
         ui->SetVisible(value);
     }
+}
+
+void UIManager::NextPageItemUI()
+{
+    auto* item_ui = static_cast<ItemUI*>(uis[static_cast<int>(UIType::Item)].get());
+    item_ui->NextPage();
+}
+
+void UIManager::PrevPageItemUI()
+{
+    auto* item_ui = static_cast<ItemUI*>(uis[static_cast<int>(UIType::Item)].get());
+    item_ui->PrevPage();
 }

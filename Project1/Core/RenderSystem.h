@@ -1,5 +1,6 @@
 #pragma once
 #include "Common/common.h"
+#include <string_view>
 #include <windows.h>
 
 class RenderSystem

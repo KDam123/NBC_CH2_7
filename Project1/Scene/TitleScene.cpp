@@ -2,15 +2,19 @@
 #include "Core/GameManager.h"
 #include "Common/common.h"
 #include "UI/UIManager.h"
+#include "UI/GameUI.h"
 
 void TitleScene::Init()
 {
-    SetUI();
-    SetMenu();
-}
+    // -----------
+    //¹è°æ
+    auto bg = std::make_unique<AsciiUI>(0, 0);
+    bg->LoadAsciiArt("bg.txt");
+    scene_uis.push_back(std::move(bg));
 
-void TitleScene::SetUI()
-{
+    UIManager::GetInstance().SetAllVisible(false);
+
+    SetMenu();
 }
 
 void TitleScene::SetMenu()
@@ -46,10 +50,6 @@ void TitleScene::ProcessEvent(const Event& e)
 }
 
 void TitleScene::Update(float delta_time)
-{
-}
-
-void TitleScene::Render()
 {
 }
 

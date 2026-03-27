@@ -17,9 +17,7 @@ GameManager::GameManager() : scene_op(SceneOp::None), next_scene(SceneType::None
 {
 }
 
-GameManager::~GameManager()
-{
-}
+GameManager::~GameManager() = default;
 
 void GameManager::Init()
 {
@@ -115,7 +113,7 @@ void GameManager::Run()
 			}
 
 			// 로직 업데이트가 끝났다면 최신 상태 그리기
-			// 화면 비우기 -> Scene Render -> Scene UI Render -> 전역 UI Render -> 화면 출력 순
+			// 화면 비우기 -> Scene Render -> 전역 UI Render -> 화면 출력 순
 			RenderSystem::GetInstance().ClearBuffer();
 
 			// 최상단 스택부터 검사해서 불투명한 씬을 찾고 찾았다면 break
@@ -217,7 +215,7 @@ void GameManager::ProcessScene()
 
 			// 씬이 없다면 종료
 			if (!scene_stack.empty()) {
-				scene_stack.back()->SetUI();
+				//scene_stack.back()->SetUI();
 				scene_stack.back()->SetMenu();
 			}
 			else {

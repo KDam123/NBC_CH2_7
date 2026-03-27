@@ -1,4 +1,5 @@
 #pragma once
+
 class Monster
 {
 public:
@@ -14,6 +15,7 @@ public:
 
 	int GetAttack() const { return attack; }
 	int GetHealth() const { return hp; }
+	int GetMaxHealth() const { return max_hp; }
 	std::string GetName() const { return name; }
 
 	void SetVisible(bool visible) { is_visible = visible; }

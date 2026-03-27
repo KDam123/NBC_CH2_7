@@ -2,13 +2,17 @@
 #include <deque>
 #include <string>
 
+class Character;
+
 class BaseUI
 {
 public:
 	BaseUI(int x, int y, int w, int h);
+	BaseUI(int x, int y);
 	virtual ~BaseUI() = default;
 
-	virtual void AddMessage(std::string_view msg);
+	virtual void AddContents(std::string_view msg);
+	void LoadAsciiArt(const std::string& path);
 	void Clear();
 
 	void SetVisible(bool valid);
@@ -24,6 +28,5 @@ protected:
 	int height;
 	int max_lines;
 	bool is_visible;
-	std::deque<std::string> messages;
+	std::deque<std::string> contents;
 };
-

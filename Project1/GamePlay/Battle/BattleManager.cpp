@@ -1,7 +1,6 @@
 #include "BattleManager.h"
 #include "Characters/Character.h"
 #include "Monster.h"
-#include "Items/Item.h"
 #include "UI/UIManager.h"
 #include "Common/common.h"
 #include "Items/HealthPotion.h"
@@ -12,9 +11,7 @@ BattleManager::BattleManager(Character* p) : player(p)
 {
 }
 
-BattleManager::~BattleManager()
-{
-}
+BattleManager::~BattleManager() = default;
 
 void BattleManager::Release()
 {
@@ -27,9 +24,13 @@ void BattleManager::Release()
 	monsters.clear();
 }
 
-void BattleManager::Init(const std::vector<Monster*>& monsters)
+void BattleManager::Init(const std::vector<std::unique_ptr<Monster>>& monsters)
 {
-	this->monsters = monsters;
+	this->monsters.clear();
+	for (const auto& monster : monsters) {
+		this->monsters.push_back(monster.get());
+	}
+
 	total_exp = 0;
 	total_gold = 0;
 	items.clear();
@@ -68,8 +69,15 @@ void BattleManager::PlayerAttack(size_t target)
 		total_gold += RandomUtil::GetRange(10, 20);
 		
 		// [임시] 아이템 30퍼 확률로 지급
-		if (RandomUtil::CheckProbability(30)) {
-			items.push_back(std::make_unique<HealthPotion>());
+		if (RandomUtil::IsSuccess(1.0)) {
+			for (int i = 0; i < 7; ++i) {
+				if (RandomUtil::IsSuccess(0.5)) {
+					items.push_back(std::make_unique<HealthPotion>());
+				}
+				else {
+					items.push_back(std::make_unique<AttackBoost>());
+				}
+			}
 		}
 
 		monster->SetVisible(false);

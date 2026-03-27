@@ -1,9 +1,26 @@
 #include "BaseScene.h"
 #include "Core/GameManager.h"
+#include  "UI/BaseUI.h"
 
 BaseScene::BaseScene()
 {
 	player = GameManager::GetInstance().GetPlayer();
+}
+
+BaseScene::~BaseScene() = default;
+
+void BaseScene::Render()
+{
+	for (const auto& ui : scene_uis) {
+		if (ui->IsVisible()) {
+			ui->Render();
+		}
+	}
+}
+
+void BaseScene::Release()
+{
+	scene_uis.clear();
 }
 
 void BaseScene::ChangeScene(SceneType scene)

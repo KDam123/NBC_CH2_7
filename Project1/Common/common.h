@@ -1,36 +1,16 @@
 #pragma once
 #define NOMINMAX
 
-#include <random>
-
-
 namespace RandomUtil {
-	inline std::random_device rd;
-	inline std::mt19937 gen(rd());
-	
-	inline int GetRange(int min, int max) 
-	{
-		std::uniform_int_distribution<int> uid(min, max);
-		return uid(gen);
-	}
-
-	inline bool CheckProbability(int percent)
-	{
-		int probability = GetRange(1, 100);
-		return probability <= percent;
-	}
-
-	inline bool CheckProbability(double percent)
-	{
-		std::uniform_real_distribution<double> urd(1.0, 100.0);
-		double probability = urd(gen);
-		return probability <= percent;
-	}
+	int GetRange(int min, int max);
+	bool IsSuccess(double percent);
 }
 
 enum class UIType {
 	Menu,
+	CharacterInfo,
 	Log,
+	Item,
 	COUNT
 };
 
