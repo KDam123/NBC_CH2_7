@@ -27,6 +27,9 @@ public:
     void NextPageItemUI();
     void PrevPageItemUI();
     void OnMonsterKilled(const std::string& monster_name); // 킬보드에 킬 추가
+    void ToggleItemUI();
+    int GetItemUICurrentPage() const;
+    int GetItemUIItemsPerPage() const;
 
 
     // 디버그용 출력 확인용 메세지, 릴리즈 모드에선 사라짐

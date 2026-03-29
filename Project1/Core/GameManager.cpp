@@ -2,17 +2,13 @@
 #include "Characters/Character.h"
 #include "GamePlay/Battle/BattleManager.h"
 #include "Scene/BaseScene.h"
-#include "Scene/TitleScene.h"
-#include "Scene/TownScene.h"
-#include "Scene/DungeonScene.h"
-#include "Scene/BattleScene.h"
 #include "Scene/ExitPopUpScene.h"
 #include "UI/UIManager.h"
 #include "Core/RenderSystem.h"
+#include "Scene/SceneFactory.h"
 #include "Items/ItemFactory.h"
 #include <thread>
 #include <conio.h>
-#include <cassert>
 
 GameManager::GameManager() : scene_op(SceneOp::None), next_scene(SceneType::None),
 	is_running(true)
@@ -30,7 +26,7 @@ void GameManager::Init()
 	battle_manager = std::make_unique<BattleManager>(player);
 	
 	// 초기 씬 = 타이틀
-	scene_stack.push_back(CreateScene(SceneType::Title));
+	scene_stack.push_back(SceneFactory::CreateScene(SceneType::Title));
 	scene_stack.back()->Init();
 }
 
@@ -204,7 +200,7 @@ void GameManager::ProcessScene()
 		[[fallthrough]];
 
 	case SceneOp::Push:
-		scene_stack.push_back(CreateScene(next_scene));
+		scene_stack.push_back(SceneFactory::CreateScene(next_scene));
 		scene_stack.back()->Init();
 		break;
 
@@ -233,30 +229,4 @@ void GameManager::ProcessScene()
 	while (!event_queue.empty()) {
 		event_queue.pop();
 	}
-}
-
-// 새로운 씬 생성 함수
-std::unique_ptr<BaseScene> GameManager::CreateScene(SceneType type)
-{
-	switch (type) {
-	case SceneType::Title:
-		return std::make_unique<TitleScene>();
-
-	case SceneType::Town:
-		return std::make_unique<TownScene>();
-
-	case SceneType::Dungeon:
-		return std::make_unique<DungeonScene>();
-
-	case SceneType::Battle:
-		return std::make_unique<BattleScene>();
-
-	case SceneType::Exit:
-		return std::make_unique<ExitPopUpScene>();
-
-	default:
-		assert(false && "씬 생성에 오류가 있습니다!");
-		return nullptr;
-	}
-	return nullptr;
 }

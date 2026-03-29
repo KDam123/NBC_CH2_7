@@ -123,3 +123,20 @@ void UIManager::OnMonsterKilled(const std::string& monster_name)    // 킬보드에 
     static_cast<KillBoardUI*>(uis[static_cast<int>(UIType::KillLog)].get())->AddKill(monster_name);
 }
 
+void UIManager::ToggleItemUI()
+{
+    auto* item_ui = static_cast<ItemUI*>(uis[static_cast<int>(UIType::Item)].get());
+    item_ui->ToggleActive();
+}
+
+int UIManager::GetItemUICurrentPage() const
+{
+    auto* item_ui = static_cast<ItemUI*>(uis[static_cast<int>(UIType::Item)].get());
+    return item_ui->GetCurrentPage();
+}
+
+int UIManager::GetItemUIItemsPerPage() const
+{
+    auto* item_ui = static_cast<ItemUI*>(uis[static_cast<int>(UIType::Item)].get());
+    return item_ui->GetItemsPerPage();
+}

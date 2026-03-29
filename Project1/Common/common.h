@@ -32,6 +32,7 @@ enum class SceneType {
 	Dungeon,
 	Battle,
 	Exit,
+	Shop,
 	None
 };
 
@@ -44,7 +45,6 @@ struct Event {
 		SceneType next_scene;
 	};
 };
-
 
 enum class MonsterType {
 	Slime, 

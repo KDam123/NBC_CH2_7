@@ -40,6 +40,14 @@ void BorderUI::Render()
     RenderSystem::GetInstance().PrintText(start_x, start_y + height - 1, bottom_border);
 }
 
+void BorderUI::ClearBackGround()
+{
+    std::string blank(width, ' ');
+    for (int i = 0; i < height; ++i) {
+        RenderSystem::GetInstance().PrintText(start_x, start_y + i, blank);
+    }
+}
+
 
 
 LogUI::LogUI(int x, int y, int w, int h) : BorderUI(x, y, w, h)
@@ -117,7 +125,7 @@ void ItemUI::Render()
     }
 
     // 상단 타이틀 출력
-    std::string title = "Inventory";
+    std::string title = (is_active) ? "[ *** Inventory *** ]" : "Inventory";
     int title_x = start_x + (width - static_cast<int>(title.length())) / 2;
     int text_y = start_y + 1;
     RenderSystem::GetInstance().PrintText(title_x, text_y++, title);
@@ -179,6 +187,66 @@ void ItemUI::PrevPage()
     }
 }
 
+void ItemUI::ToggleActive()
+{
+    is_active = !is_active;
+}
+
+bool ItemUI::IsActive() const
+{
+    return is_active;
+}
+
+int ItemUI::GetCurrentPage() const
+{
+    return current_page;
+}
+
+int ItemUI::GetItemsPerPage() const
+{
+    return ITEMS_PER_PAGE;
+}
+
+
+
+ItemConfirmUI::ItemConfirmUI(int x, int y, int w, int h)
+    : BorderUI(x, y, w, h)
+{
+}
+
+void ItemConfirmUI::Render()
+{
+    if (!target) {
+        return;
+    }
+
+    ClearBackGround();
+    BorderUI::Render();
+    
+    // 질문 출력
+    int text_y = start_y + 1;
+    std::string question = target->GetName() + "을(를) 사용하시겠습니까?";
+    int text_x = start_x + (width - static_cast<int>(question.length())) / 2;
+    RenderSystem::GetInstance().PrintText(text_x, text_y++, question);
+
+    // 설명 출력
+    std::string desc = target->GetDesc();
+    text_x = start_x + (width - static_cast<int>(desc.length())) / 2;
+    RenderSystem::GetInstance().PrintText(text_x, text_y++, desc);
+    ++text_y;
+    ++text_y;
+
+    // 선택지 출력
+    std::string option = "[Y] YES  [N] NO";
+    text_x = start_x + (width - static_cast<int>(option.length())) / 2;
+    RenderSystem::GetInstance().PrintText(text_x, text_y, option);
+}
+
+void ItemConfirmUI::SetTarget(const IItem* item)
+{
+    target = item;
+}
+
 
 
 AsciiUI::AsciiUI(int x, int y) : BaseUI(x, y)
@@ -194,7 +262,7 @@ void AsciiUI::Render()
 
 
 
-CharacterUI::CharacterUI(int x, int y) : AsciiUI(x, y)
+CharacterUI::CharacterUI(int x, int y) : AsciiUI(x, y), target(nullptr)
 {
 }
 
@@ -219,7 +287,7 @@ void CharacterUI::SetTarget(const Character* target)
 
    
 
-MonsterUI::MonsterUI(int x, int y) : AsciiUI(x, y)
+MonsterUI::MonsterUI(int x, int y) : AsciiUI(x, y), target(nullptr)
 {
 }
 

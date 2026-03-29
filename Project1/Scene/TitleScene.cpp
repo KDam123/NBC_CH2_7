@@ -26,26 +26,23 @@ void TitleScene::SetMenu()
 
 void TitleScene::ProcessEvent(const Event& e)
 {
-    if (e.type == EventType::KeyDown) {
-        SetMenu();
+    if (e.type != EventType::KeyDown) {
+        return;
+    }
 
-        switch (e.key_code) {
-        case '1':
-            ChangeScene(SceneType::Town);
-            break;
-
-        default:
-            UIManager::GetInstance().AddContent(UIType::Menu, "잘못 입력하셨습니다. 다시 입력해주세요.");
-            break;
-        }
+    SetMenu();
+    
+    switch (e.key_code) {
+    case '1':
+        ChangeScene(SceneType::Town);
+        break;
+    
+    default:
+        UIManager::GetInstance().AddContent(UIType::Menu, "잘못 입력하셨습니다. 다시 입력해주세요.");
+        break;
     }
 }
 
 void TitleScene::Update(float delta_time)
 {
 }
-
-void TitleScene::Release()
-{
-}
-

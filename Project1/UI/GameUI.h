@@ -4,6 +4,7 @@
 
 class Character;
 class Monster;
+class IItem;
 
 // 테두리 있는 UI
 class BorderUI : public BaseUI
@@ -13,6 +14,9 @@ public:
 	virtual ~BorderUI() = default;
 
 	virtual void Render() override;
+	
+protected:
+	void ClearBackGround();
 
 private:
 	std::string top_border;
@@ -49,10 +53,26 @@ public:
 	void Render() override;
 	void NextPage();
 	void PrevPage();
+	void ToggleActive();
+	bool IsActive() const;
+	int GetCurrentPage() const;
+	int GetItemsPerPage() const;
 
 private:
 	int current_page = 0;
-	const int ITEMS_PER_PAGE = 10;
+	const int ITEMS_PER_PAGE = 9;
+	bool is_active = false;
+};
+
+
+class ItemConfirmUI : public BorderUI {
+public:
+	ItemConfirmUI(int x, int y, int w, int h);
+	void Render() override;
+	void SetTarget(const IItem* item);
+
+private:
+	const IItem* target = nullptr;
 };
 
 

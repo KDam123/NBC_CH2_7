@@ -2,6 +2,7 @@
 #include "Core/GameManager.h"
 #include "GamePlay/Battle/BattleManager.h"
 #include "UI/UIManager.h"
+#include "UI/GameUI.h"
 #include "Characters/Character.h"
 #include "Monster.h"
 #include "MonsterFactory.h"
@@ -33,7 +34,7 @@ void BattleScene::Init()
 	// -----------
 	//배경
 	auto bg = std::make_unique<AsciiUI>(0, 0);
-	bg->LoadAsciiArt("Resource/bg.txt");
+	bg->LoadAsciiArt("Resource/Battle_Background.txt");
 	scene_uis.push_back(std::move(bg));
 
 
@@ -139,6 +140,7 @@ void BattleScene::Release()
 {
 	BaseScene::Release();
 	monsters.clear();
+	monster_uis.clear();
 }
 
 // private 함수

@@ -6,6 +6,8 @@
 
 void DungeonScene::Init()
 {
+    ItemUsableScene::Init();
+
     // -----------
     //배경
     auto bg = std::make_unique<AsciiUI>(0, 0);
@@ -23,43 +25,31 @@ void DungeonScene::SetMenu()
     UIManager::GetInstance().AddContent(UIType::Menu, "어떤 행동을 하시겠습니까?: ");
 }
 
-void DungeonScene::ProcessEvent(const Event& e)
+void DungeonScene::ProcessNormalEvent(const Event& e)
 {
-    if (e.type == EventType::KeyDown) {
-        SetMenu();
+    if (e.type != EventType::KeyDown) {
+        return;
+    }
 
-        switch (e.key_code) {
-        case '1':
-            UIManager::GetInstance().AddContent(UIType::Log, "[조우] 몬스터와 조우했습니다!");
-            PushScene(SceneType::Battle);
-            break;
+    SetMenu();
 
-        case '2':
-            UIManager::GetInstance().AddContent(UIType::Log, "[이동] 마을로 귀환합니다...");
-            ChangeScene(SceneType::Town);
-            break;
-
-        case 'q':
-        case 'Q':
-            UIManager::GetInstance().PrevPageItemUI();
-            break;
-
-        case 'e':
-        case 'E':
-            UIManager::GetInstance().NextPageItemUI();
-            break;
-
-        default:
-            UIManager::GetInstance().AddContent(UIType::Menu, "잘못된 입력입니다.");
-            break;
-        }
+    switch (e.key_code) {
+    case '1':
+        UIManager::GetInstance().AddContent(UIType::Log, "[조우] 몬스터와 조우했습니다!");
+        PushScene(SceneType::Battle);
+        break;
+    
+    case '2':
+        UIManager::GetInstance().AddContent(UIType::Log, "[이동] 마을로 귀환합니다...");
+        ChangeScene(SceneType::Town);
+        break;
+    
+    default:
+        UIManager::GetInstance().AddContent(UIType::Menu, "잘못된 입력입니다.");
+        break;
     }
 }
 
 void DungeonScene::Update(float delta_time)
-{
-}
-
-void DungeonScene::Release()
 {
 }

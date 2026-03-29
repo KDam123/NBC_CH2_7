@@ -1,5 +1,4 @@
 #pragma once
-#include "MonsterFactory.h"
 #include "Common/common.h"
 #include <memory>
 

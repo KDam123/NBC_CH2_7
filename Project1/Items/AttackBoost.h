@@ -11,12 +11,14 @@ private:
 	std::string name;
 	ItemID id;
 	int attack_increase;
+	std::string description;
 
 public:
 	AttackBoost();
 
 	std::string GetName() const override;
 	ItemID GetID() const override;
+	std::string GetDesc() const override;
 
 	void Use(Character& target) override;
 };

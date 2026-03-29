@@ -1,10 +1,10 @@
 #include "MonsterFactory.h"
-#include <unordered_map>
-#include <functional>
 #include "Orc.h"
 #include "Slime.h"
 #include "Troll.h"
 #include "Goblin.h"
+#include <unordered_map>
+#include <functional>
 
 using Func = std::function<std::unique_ptr<Monster>(int)>;
 

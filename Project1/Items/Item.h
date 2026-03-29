@@ -19,4 +19,5 @@ public:
 	// getters
 	virtual std::string GetName() const = 0;
 	virtual ItemID GetID() const = 0;
+	virtual std::string GetDesc() const = 0;
 };
