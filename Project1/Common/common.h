@@ -1,5 +1,6 @@
 #pragma once
 #define NOMINMAX
+#include <string>
 
 namespace RandomUtil {
 	int GetRange(int min, int max);
@@ -44,6 +45,7 @@ struct Event {
 		int key_code;
 		SceneType next_scene;
 	};
+	std::string scene_data;
 };
 
 enum class MonsterType {

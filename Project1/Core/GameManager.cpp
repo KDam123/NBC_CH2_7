@@ -74,11 +74,13 @@ void GameManager::Run()
 			case EventType::ChangeScene:
 				scene_op = SceneOp::Change;
 				next_scene = ev.next_scene;
+				next_scene_data = ev.scene_data;
 				break;
 
 			case EventType::PushScene:
 				scene_op = SceneOp::Push;
-				next_scene = ev.next_scene;
+				next_scene = ev.next_scene; 
+				next_scene_data = ev.scene_data;
 				break;
 
 			case EventType::PopScene:
@@ -203,9 +205,15 @@ void GameManager::ProcessScene()
 		[[fallthrough]];
 
 	case SceneOp::Push:
-		scene_stack.push_back(SceneFactory::CreateScene(next_scene));
-		scene_stack.back()->Init();
+	{
+		auto scene = SceneFactory::CreateScene(next_scene);
+		if (scene) {
+			scene->SetSceneData(next_scene_data);
+			scene->Init();
+			scene_stack.push_back(std::move(scene));
+		}
 		break;
+	}
 
 	case SceneOp::Pop:
 		if (!scene_stack.empty()) {

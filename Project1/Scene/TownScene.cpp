@@ -37,9 +37,11 @@ void TownScene::ProcessNormalEvent(const Event& e)
         break;
 
     case '2':
+    {
         UIManager::GetInstance().AddContent(UIType::Log, "[이동] 상점에 들어갑니다");
-        PushScene(SceneType::Shop);
+        PushScene(SceneType::Shop, "Resource/Shop/Novice Village.txt");
         break;
+    }
 
     case '3':
         UIManager::GetInstance().AddContent(UIType::Log, "[이동] 어두운 던전으로 향합니다...");

@@ -2,6 +2,7 @@
 #include "BaseScene.h"
 #include "Items/Item.h"
 #include <memory>
+#include <string>
 #include <vector>
 
 class ShopUI;
@@ -22,6 +23,7 @@ public:
 	void Update(float delta_time) override;
 	void Render() override;
 	void Release() override;
+	void SetSceneData(const std::string& data) override;
 
 private:
 	ShopState current_state = ShopState::Buy;
@@ -30,8 +32,9 @@ private:
 	size_t selected_index = 0;
 	std::unique_ptr<ShopUI> shop_ui;
 	std::unique_ptr<ItemConfirmUI> popup_ui;
+	std::string shop_path;
 
-	void ReadItemList();
+	void LoadItemList(const std::string& path);
 	void ProcessNormalMode(const Event& e);
 	void ProcessItemConfirm(const Event& e);
 	void TradeItem();

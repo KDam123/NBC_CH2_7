@@ -2,7 +2,7 @@
 #include <fstream>
 
 
-const std::deque<std::string>& ResourceManager::GetResource(const std::string& file_path)
+std::optional<std::reference_wrapper<const std::deque<std::string>>> ResourceManager::GetResource(const std::string& file_path)
 {
 	// 이미 읽어온 파일이면 해당 내용 반환
 	auto it = data.find(file_path);
@@ -13,9 +13,9 @@ const std::deque<std::string>& ResourceManager::GetResource(const std::string& f
 	std::deque<std::string>& resource = data[file_path];
 	std::ifstream in(file_path);
 	
-	// 파일이 없다면 NoneFile 이라고 저장
+	// 파일이 없다면 nullopt 반환
 	if (!in.is_open()) {
-		resource.push_back("None File");
+		return std::nullopt;
 	}
 	else {
 		std::string line;

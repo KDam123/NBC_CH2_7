@@ -5,6 +5,7 @@
 #include "Characters/Character.h"
 #include "Core/ItemDataBase.h"
 #include "Items/ItemFactory.h"
+#include "Core/ResourceManager.h"
 
 ShopScene::ShopScene() = default;
 ShopScene::~ShopScene() = default;
@@ -15,10 +16,7 @@ void ShopScene::Init()
 	input_state = ShopInputState::Normal;
 	selected_index = 0;
 
-	// 임시로 아이템 추가
-	shop_items.push_back(ItemID::HealthPotion);
-	shop_items.push_back(ItemID::AttackBoost);
-
+	LoadItemList(shop_path);
 
 	// -----------
 	// 배경
@@ -104,9 +102,31 @@ void ShopScene::Release()
 	BaseScene::Release();
 }
 
-void ShopScene::ReadItemList()
+void ShopScene::SetSceneData(const std::string& data)
 {
-	// 파일 읽어서 아이템 리스트 등록
+	shop_path = data;
+}
+
+void ShopScene::LoadItemList(const std::string& path)
+{
+	shop_items.clear();
+
+	auto res = ResourceManager::GetInstance().GetResource(path);
+
+	if (!res.has_value()) {
+		UIManager::GetInstance().AddContent(UIType::Log, "[에러] 상점 파일을 찾을 수 없습니다");
+		return;
+	}
+
+	const auto& data = res->get();
+	for (const auto& s : data) {
+		if (s.empty()) {
+			continue;
+		}
+
+		int id = std::stoi(s);
+		shop_items.push_back(static_cast<ItemID>(id));
+	}
 }
 
 void ShopScene::ProcessNormalMode(const Event& e)

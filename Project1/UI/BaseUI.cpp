@@ -22,7 +22,14 @@ void BaseUI::AddContents(std::string_view msg)
 
 void BaseUI::LoadAsciiArt(const std::string& path)
 {
-    contents = ResourceManager::GetInstance().GetResource(path);
+    auto res = ResourceManager::GetInstance().GetResource(path);
+    if (res.has_value()) {
+        contents = res->get();
+    }
+    else {
+        contents.clear();
+        contents.push_back("Resource Not Found");
+    }
 }
 
 void BaseUI::Clear()
