@@ -227,7 +227,7 @@ std::unique_ptr<IItem> Character::UnequipArmor()
 	return std::move(equipped_armor); // 이전에 장착했던 방어구 반환
 }
 
-<<<<<<< HEAD
+
 void Character::ApplyAttackBuff(int amount)
 {
 	bonus_attack = std::max(bonus_attack, amount);
