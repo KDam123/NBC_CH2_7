@@ -133,6 +133,8 @@ void GameManager::Run()
 			UIManager::GetInstance().Render();
 			RenderSystem::GetInstance().Draw();
 		}
+		//게임 종료시 로그 저장
+		UIManager::GetInstance().SaveLogToFile("gamelog.txt"); 
 
 		// 짧게 휴식
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));

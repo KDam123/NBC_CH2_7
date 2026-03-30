@@ -21,6 +21,10 @@ public:
 
 	virtual void Render() = 0;
 
+	//전체 로그 저장용 
+	std::deque<std::string> all_contents; 
+	const std::deque<std::string>& GetAllContents() const { return all_contents; }
+
 protected:
 	int start_x;
 	int start_y;

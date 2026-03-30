@@ -3,6 +3,7 @@
 #include "BaseUI.h"
 #include <vector>
 #include <memory>
+#include <fstream> //내가 추가한 부분. ofstream를 쓰기 위해
 
 class UIManager 
 {
@@ -27,6 +28,7 @@ public:
     void NextPageItemUI();
     void PrevPageItemUI();
     void OnMonsterKilled(const std::string& monster_name); // 킬보드에 킬 추가
+    void SaveLogToFile(const std::string& filename); //로그 파일 저장
 
 private:
     std::vector<std::unique_ptr<BaseUI>> uis;

@@ -123,3 +123,25 @@ void UIManager::OnMonsterKilled(const std::string& monster_name)    // 킬보드에 
     static_cast<KillBoardUI*>(uis[static_cast<int>(UIType::KillLog)].get())->AddKill(monster_name);
 }
 
+void UIManager::SaveLogToFile(const std::string& filename)  //로그 저장
+{
+    std::ofstream file(filename);
+
+    // 킬보드 저장
+    file << "\n=== 킬 보드 ===\n";
+    auto* kill_ui = static_cast<KillBoardUI*>(uis[static_cast<int>(UIType::KillLog)].get());
+    for (const auto& k : kill_ui->GetKillCount())
+    {
+        file << k.first << " x" << k.second << "\n";
+    }
+
+    // 전투 로그 저장
+    file << "=== 전투 로그 ===\n";
+    auto* log_ui = uis[static_cast<int>(UIType::Log)].get();
+    for (const auto& line : log_ui->GetAllContents())
+    {
+        file << line << "\n";
+    }
+
+    file.close();
+}
