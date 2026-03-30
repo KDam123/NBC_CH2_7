@@ -127,6 +127,7 @@
   <ItemGroup>
     <ClInclude Include="DropTable.h" />
     <ClInclude Include="Core\ItemDataBase.h" />
+    <ClInclude Include="Scene\EncounterScene.h" />
     <ClInclude Include="Items\Equippable\Armor.h" />
     <ClInclude Include="Items\Consumable\ConsumableItem.h" />
     <ClInclude Include="Items\Equippable\EquippableItem.h" />
@@ -145,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\ItemDataBase.cpp" />
+    <ClCompile Include="Scene\EncounterScene.cpp" />
     <ClCompile Include="Items\Equippable\Armor.cpp" />
     <ClCompile Include="Items\Equippable\Sword.cpp" />
     <ClCompile Include="Scene\ItemUsableScene.cpp" />

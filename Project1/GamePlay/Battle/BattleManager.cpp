@@ -51,7 +51,7 @@ void BattleManager::PlayerAttack(size_t target)
 		return;
 	}
 
-	int damage = player.GetAttack();
+	int damage = player.GetTotalAttack();
 	monster->TakeDamage(damage);
 	
 	UIManager::GetInstance().AddContent(UIType::Log,
