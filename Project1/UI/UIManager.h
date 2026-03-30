@@ -28,13 +28,10 @@ public:
     void NextPageItemUI();
     void PrevPageItemUI();
     void OnMonsterKilled(const std::string& monster_name); // 킬보드에 킬 추가
-<<<<<<< HEAD
-    void SaveLogToFile(const std::string& filename); //로그 파일 저장
-=======
     void ToggleItemUI();
     int GetItemUICurrentPage() const;
     int GetItemUIItemsPerPage() const;
-
+    void SaveLogToFile(const std::string& filename); //로그 파일 저장
 
     // 디버그용 출력 확인용 메세지, 릴리즈 모드에선 사라짐
     static void TestMessage(std::string_view msg) {
@@ -42,7 +39,7 @@ public:
         UIManager::GetInstance().AddContent(UIType::Log, msg);
 #endif
     }
->>>>>>> 1456eaac127ff824e50b5e342c5671449b4efac7
+
 
 private:
     std::vector<std::unique_ptr<BaseUI>> uis;

@@ -125,8 +125,25 @@ void UIManager::OnMonsterKilled(const std::string& monster_name)    // 킬보드에 
     static_cast<KillBoardUI*>(uis[static_cast<int>(UIType::KillLog)].get())->AddKill(monster_name);
 }
 
-<<<<<<< HEAD
-void UIManager::SaveLogToFile(const std::string& filename)  //로그 저장
+void UIManager::ToggleItemUI()
+{
+    auto* item_ui = static_cast<InventoryUI*>(uis[static_cast<int>(UIType::Inventory)].get());
+    item_ui->ToggleActive();
+}
+
+int UIManager::GetItemUICurrentPage() const
+{
+    auto* item_ui = static_cast<InventoryUI*>(uis[static_cast<int>(UIType::Inventory)].get());
+    return item_ui->GetCurrentPage();
+}
+
+int UIManager::GetItemUIItemsPerPage() const
+{
+    auto* item_ui = static_cast<InventoryUI*>(uis[static_cast<int>(UIType::Inventory)].get());
+    return item_ui->GetItemsPerPage();
+}
+
+void UIManager::SaveLogToFile(const std::string & filename)  //로그 저장
 {
     std::ofstream file(filename);
 
@@ -148,22 +165,3 @@ void UIManager::SaveLogToFile(const std::string& filename)  //로그 저장
 
     file.close();
 }
-=======
-void UIManager::ToggleItemUI()
-{
-    auto* item_ui = static_cast<InventoryUI*>(uis[static_cast<int>(UIType::Inventory)].get());
-    item_ui->ToggleActive();
-}
-
-int UIManager::GetItemUICurrentPage() const
-{
-    auto* item_ui = static_cast<InventoryUI*>(uis[static_cast<int>(UIType::Inventory)].get());
-    return item_ui->GetCurrentPage();
-}
-
-int UIManager::GetItemUIItemsPerPage() const
-{
-    auto* item_ui = static_cast<InventoryUI*>(uis[static_cast<int>(UIType::Inventory)].get());
-    return item_ui->GetItemsPerPage();
-}
->>>>>>> 1456eaac127ff824e50b5e342c5671449b4efac7
