@@ -31,6 +31,10 @@ void GameManager::Init()
 	// 초기 씬 = 타이틀
 	scene_stack.push_back(SceneFactory::CreateScene(SceneType::Title));
 	scene_stack.back()->Init();
+
+	
+	UIManager::GetInstance().LoadLogFromFile("gamelog.txt"); //게임 시작시 로그 기록 불러옴. 없으면 넘긴다.
+
 }
 
 // 게임 루프 

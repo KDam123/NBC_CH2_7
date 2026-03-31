@@ -57,6 +57,22 @@ void UIManager::AddContent(UIType type, std::string_view msg)
     if (idx < static_cast<size_t>(UIType::COUNT)) {
         uis[idx]->AddContents(msg);
     }
+
+    // 카운트 추가 - 게임 로그 카운트 체크
+    if (type == UIType::Log) {
+        std::string s(msg);
+        if (s.find("[공격]") != std::string::npos) count_attack_++;
+        else if (s.find("[피격]") != std::string::npos) count_damage_++;
+        else if (s.find("[조우]") != std::string::npos) count_encounter_++;
+        else if (s.find("[이동]") != std::string::npos) count_move_++;
+        else if (s.find("[휴식]") != std::string::npos) count_rest_++;
+        else if (s.find("[보상]") != std::string::npos) count_reward_++;
+        else if (s.find("[도망]") != std::string::npos) count_escape_++;
+        else if (s.find("[사망]") != std::string::npos) count_death_++;
+        else if (s.find("[사용]") != std::string::npos) count_use_++;
+        else if (s.find("[처치]") != std::string::npos) count_total_kills_++;
+    }
+
 }
 
 void UIManager::ClearContent(UIType type)
@@ -143,25 +159,84 @@ int UIManager::GetItemUIItemsPerPage() const
     return item_ui->GetItemsPerPage();
 }
 
-void UIManager::SaveLogToFile(const std::string & filename)  //로그 저장
+void UIManager::SaveLogToFile(const std::string& filename)
 {
     std::ofstream file(filename);
 
+    // kill_ui 한 번만 선언
+    auto* kill_ui = static_cast<KillBoardUI*>(uis[static_cast<int>(UIType::KillLog)].get());
+
+    for (const auto& k : kill_ui->GetKillCount())
+        count_total_kills_ += k.second;
+
+    file << "\n=== 통계 ===\n";
+    file << "[공격] 횟수: " << count_attack_ << "\n";
+    file << "[피격] 횟수: " << count_damage_ << "\n";
+    file << "[조우] 횟수: " << count_encounter_ << "\n";
+    file << "[이동] 횟수: " << count_move_ << "\n";
+    file << "[휴식] 횟수: " << count_rest_ << "\n";
+    file << "[보상] 획득: " << count_reward_ << "\n";
+    file << "[도망] 횟수: " << count_escape_ << "\n";
+    file << "[사망] 횟수: " << count_death_ << "\n";
+    file << "[사용] 횟수: " << count_use_ << "\n";
+    file << "[처치] 횟수: " << count_total_kills_ << "\n";
+
     // 킬보드 저장
     file << "\n=== 킬 보드 ===\n";
-    auto* kill_ui = static_cast<KillBoardUI*>(uis[static_cast<int>(UIType::KillLog)].get());
     for (const auto& k : kill_ui->GetKillCount())
-    {
         file << k.first << " x" << k.second << "\n";
-    }
 
     // 전투 로그 저장
-    file << "=== 전투 로그 ===\n";
+    file << "\n=== 전투 로그 ===\n";
     auto* log_ui = uis[static_cast<int>(UIType::Log)].get();
     for (const auto& line : log_ui->GetAllContents())
-    {
         file << line << "\n";
-    }
 
     file.close();
+}
+
+void UIManager::LoadLogFromFile(const std::string& filename) //로그 로드
+{
+    std::ifstream file(filename);
+    if (!file.is_open()) return;  // 파일 없으면 그냥 넘어감
+
+    std::string line;
+    while (std::getline(file, line))
+    {
+        if (line.find("[공격] 횟수: ") != std::string::npos)
+            count_attack_ = std::stoi(line.substr(line.find(": ") + 2));
+        else if (line.find("[피격] 횟수: ") != std::string::npos)
+            count_damage_ = std::stoi(line.substr(line.find(": ") + 2));
+        else if (line.find("[조우] 횟수: ") != std::string::npos)
+            count_encounter_ = std::stoi(line.substr(line.find(": ") + 2));
+        else if (line.find("[이동] 횟수: ") != std::string::npos)
+            count_move_ = std::stoi(line.substr(line.find(": ") + 2));
+        else if (line.find("[휴식] 횟수: ") != std::string::npos)
+            count_rest_ = std::stoi(line.substr(line.find(": ") + 2));
+        else if (line.find("[보상] 획득: ") != std::string::npos)
+            count_reward_ = std::stoi(line.substr(line.find(": ") + 2));
+        else if (line.find("[도망] 횟수: ") != std::string::npos)
+            count_escape_ = std::stoi(line.substr(line.find(": ") + 2));
+        else if (line.find("[사망] 횟수: ") != std::string::npos)
+            count_death_ = std::stoi(line.substr(line.find(": ") + 2));
+        else if (line.find("[사용] 횟수: ") != std::string::npos)
+            count_use_ = std::stoi(line.substr(line.find(": ") + 2));
+        else if (line.find("[처치] 횟수: ") != std::string::npos)
+            count_total_kills_ = std::stoi(line.substr(line.find(": ") + 2));
+    }
+    file.close();
+}
+
+void UIManager::ResetStats()
+{
+    count_attack_ = 0;
+    count_damage_ = 0;
+    count_encounter_ = 0;
+    count_move_ = 0;
+    count_rest_ = 0;
+    count_reward_ = 0;
+    count_escape_ = 0;
+    count_death_ = 0;
+    count_use_ = 0;
+    count_total_kills_ = 0;
 }
