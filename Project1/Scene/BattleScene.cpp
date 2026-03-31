@@ -141,6 +141,7 @@ void BattleScene::Release()
 	BaseScene::Release();
 	monsters.clear();
 	monster_uis.clear();
+	Character::GetInstance().ClearBuffs();
 }
 
 // private ÇÔ¼ö

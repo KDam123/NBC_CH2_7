@@ -20,6 +20,7 @@ public:
 	bool IsVisible() const;
 
 	virtual void Render() = 0;
+	virtual void Update(float delta_time) {}
 
 protected:
 	int start_x;

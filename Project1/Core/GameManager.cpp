@@ -54,50 +54,7 @@ void GameManager::Run()
 		ProcessInput();
 
 		// 이벤트 처리
-		while (!event_queue.empty()) {
-			Event ev = event_queue.front();
-			event_queue.pop();
-
-			switch (ev.type) {
-			case EventType::KeyDown:
-				if (!scene_stack.empty()) {
-					scene_stack.back()->ProcessEvent(ev);
-				}
-				break;
-
-			case EventType::KeyUp:
-				if (!scene_stack.empty()) {
-					scene_stack.back()->ProcessEvent(ev);
-				}
-				break;
-
-			case EventType::ChangeScene:
-				scene_op = SceneOp::Change;
-				next_scene = ev.next_scene;
-				next_scene_data = ev.scene_data;
-				break;
-
-			case EventType::PushScene:
-				scene_op = SceneOp::Push;
-				next_scene = ev.next_scene; 
-				next_scene_data = ev.scene_data;
-				break;
-
-			case EventType::PopScene:
-				scene_op = SceneOp::Pop;
-				break;
-
-			case EventType::Quit:
-				is_running = false;
-				break;
-			}
-
-			// 씬 전환 예약되었으면 이후에 다른 event가 있어도 무시
-			if (scene_op != SceneOp::None) {
-				break;
-			}
-		}
-
+		ProcessEvent();
 
 		// 16.66ms가 지났다면 update, render
 		if (accumulator >= delta_time) {
@@ -162,6 +119,59 @@ BattleManager* GameManager::GetBattleManager() const
 }
 
 
+void GameManager::ProcessEvent()
+{
+	while (!event_queue.empty()) {
+		Event ev = event_queue.front();
+		event_queue.pop();
+
+		switch (ev.type) {
+		case EventType::KeyDown:
+			if (!scene_stack.empty()) {
+				scene_stack.back()->ProcessEvent(ev);
+			}
+			break;
+
+		case EventType::KeyUp:
+			if (!scene_stack.empty()) {
+				scene_stack.back()->ProcessEvent(ev);
+			}
+			break;
+
+		case EventType::ChangeScene:
+			scene_op = SceneOp::Change;
+			next_scene = ev.next_scene;
+			next_scene_data = ev.scene_data;
+			break;
+
+		case EventType::PushScene:
+			scene_op = SceneOp::Push;
+			next_scene = ev.next_scene;
+			next_scene_data = ev.scene_data;
+			break;
+
+		case EventType::PopScene:
+			scene_op = SceneOp::Pop;
+			break;
+
+		case EventType::ReplaceScene:
+			scene_op = SceneOp::Replace;
+			next_scene = ev.next_scene;
+			next_scene_data = ev.scene_data;
+			break;
+
+		case EventType::Quit:
+			is_running = false;
+			break;
+		}
+
+		// 씬 전환 예약되었으면 이후에 다른 event가 있어도 무시
+		if (scene_op != SceneOp::None) {
+			break;
+		}
+	}
+}
+
 // private 함수
 void GameManager::ProcessInput()
 {
@@ -224,6 +234,25 @@ void GameManager::ProcessScene()
 			}
 		}
 		break;
+
+	case SceneOp::Replace:	// Pop - Push
+	{
+		// 기존 씬 날리고
+		if (!scene_stack.empty()) {
+			scene_stack.back()->Release();
+			scene_stack.pop_back();
+		}
+
+		// 새로운 씬 push
+		auto scene = SceneFactory::CreateScene(next_scene);
+		if (scene) {
+			scene->SetSceneData(next_scene_data);
+			scene->Init();
+			scene_stack.push_back(std::move(scene));
+		}
+		break;
+	}
+
 	}
 
 

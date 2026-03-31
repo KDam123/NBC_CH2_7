@@ -42,6 +42,7 @@ private:
 	GameManager();
 	~GameManager();
 
+	void ProcessEvent();
 	void ProcessInput();
 	void ProcessScene();
 };
