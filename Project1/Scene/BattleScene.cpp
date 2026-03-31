@@ -4,8 +4,6 @@
 #include "UI/UIManager.h"
 #include "UI/GameUI.h"
 #include "Characters/Character.h"
-#include "Monster.h"
-#include "MonsterFactory.h"
 #include "Core/DungeonMapState.h"
 #include "Monsters/Monster.h"
 #include "Monsters/MonsterFactory.h"
