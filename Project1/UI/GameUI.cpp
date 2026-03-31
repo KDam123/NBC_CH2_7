@@ -58,17 +58,51 @@ LogUI::LogUI(int x, int y, int w, int h) : BorderUI(x, y, w, h)
 
 void LogUI::AddContents(std::string_view msg)
 {
-    int length = width - 2;
-    std::string_view line = msg;
+    int max_len = width - 2;
 
-    // 문자열 자르기 반복
-    while (line.size() >= length) {
-        BaseUI::AddContents(line.substr(0, length));
-        line = line.substr(length);
+    // std::string std::wstring
+    int wlen = MultiByteToWideChar(CP_UTF8, 0, msg.data(), static_cast<int>(msg.length()), NULL, 0);
+    if (wlen <= 0) {
+        return;
     }
 
-    if (!line.empty()) {
-        BaseUI::AddContents(line);
+    std::wstring wstr(wlen, 0);
+    MultiByteToWideChar(CP_UTF8, 0, msg.data(), static_cast<int>(msg.length()), &wstr[0], wlen);
+
+    std::wstring current_line;
+    int current_visual_width = 0;
+
+    // 글자 하나씩 확인하면서 콘솔 출력 너비 계산
+    for (wchar_t wc : wstr) {
+        // 영어, 숫자, 띄어쓰기는 콘솔에서 1칸, 한글 및 특수문자는 2칸 차지
+        int char_width = (wc <= 127) ? 1 : 2;
+
+        // 만약 이번 글자를 추가했을 때 UI 너비를 초과한다면?
+        if (current_visual_width + char_width > max_len) {
+            // 지금까지 모은 wstring을 다시 UTF-8로 변환
+            int ulen = WideCharToMultiByte(CP_UTF8, 0, current_line.c_str(), static_cast<int>(current_line.length()), NULL, 0, NULL, NULL);
+            std::string u8str(ulen, 0);
+            WideCharToMultiByte(CP_UTF8, 0, current_line.c_str(), static_cast<int>(current_line.length()), &u8str[0], ulen, NULL, NULL);
+
+            // 변환된 안전한 문자열을 UI 리스트에 추가
+            BaseUI::AddContents(u8str);
+
+            // 다음 줄을 위해 초기화
+            current_line.clear();
+            current_visual_width = 0;
+        }
+
+        current_line += wc;
+        current_visual_width += char_width;
+    }
+
+    // 자르고 남은 마지막 줄 처리
+    if (!current_line.empty()) {
+        int ulen = WideCharToMultiByte(CP_UTF8, 0, current_line.c_str(), static_cast<int>(current_line.length()), NULL, 0, NULL, NULL);
+        std::string u8str(ulen, 0);
+        WideCharToMultiByte(CP_UTF8, 0, current_line.c_str(), static_cast<int>(current_line.length()), &u8str[0], ulen, NULL, NULL);
+
+        BaseUI::AddContents(u8str);
     }
 }
 
