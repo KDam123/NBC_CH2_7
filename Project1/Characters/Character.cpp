@@ -40,7 +40,7 @@ void Character::DisplayInventory() const
 
 void Character::LevelUp()
 {
-	if (level >= 10)
+	if (level >= max_level)
 	{
 		return;
 	}
@@ -234,4 +234,9 @@ void Character::ClearBuffs()
 {
 	// 일회용 버프 초기화
 	bonus_attack = 0;
+}
+
+bool Character::IsMaxLevel() const
+{
+	return (level == max_level);
 }

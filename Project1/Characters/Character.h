@@ -10,6 +10,7 @@ class Character
 private:
 	std::string name;
 	int level;
+	const int max_level = 10;
 	int health;
 	int max_health;
 	int attack;
@@ -66,6 +67,8 @@ public:
 	void ApplyAttackBuff(int amount);
 
 	void ClearBuffs();
+
+	bool IsMaxLevel() const;
 
 	// getters
 	int GetLevel() const { return level; }

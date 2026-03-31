@@ -64,3 +64,8 @@ void TitleScene::ProcessEvent(const Event& e)
 void TitleScene::Update(float delta_time)
 {
 }
+
+bool TitleScene::IsExitable() const
+{
+    return false;
+}

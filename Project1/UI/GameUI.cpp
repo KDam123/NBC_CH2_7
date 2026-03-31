@@ -1,8 +1,9 @@
 #include "GameUI.h"
 #include "Core/RenderSystem.h"
 #include "Characters/Character.h"
-#include "Monster.h"
+#include "Monsters/Monster.h"
 #include "Items/Item.h"
+#include "Items/Consumable/ConsumableItem.h"
 #include "Core/ItemDataBase.h"
 
 
@@ -208,6 +209,11 @@ void InventoryUI::Render()
 
             std::string item_text = std::to_string(i - start_idx + 1) + ". " +
                 std::string(item->GetName());
+           /* std::string stack_text = (item->GetType() == ItemType::Consumable) ?
+                " x" + std::to_string(static_cast<ConsumableItem*>(item)->GetCount()) :
+                "";
+            std::string item_text = std::to_string(i - start_idx + 1) + ". " +
+                std::string(item->GetName()) + stack_text;*/
 
             RenderSystem::GetInstance().PrintText(start_x + 2, text_y++, item_text);
         }
