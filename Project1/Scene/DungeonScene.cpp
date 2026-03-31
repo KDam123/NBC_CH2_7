@@ -3,13 +3,15 @@
 #include "UI/GameUI.h"
 #include "Core/RenderSystem.h"
 #include "Core/DungeonMapState.h"
+#include "Characters/Character.h"
+
 
 void DungeonScene::Init()
 {
     ItemUsableScene::Init();
 
     // -----------
-    //¹è°æ
+    //ë°°ê²½
     auto bg = std::make_unique<AsciiUI>(0, 0);
     bg->LoadAsciiArt(DungeonMapState::GetCurrentMapPath());
     scene_uis.push_back(std::move(bg));
@@ -21,8 +23,11 @@ void DungeonScene::Init()
 void DungeonScene::SetMenu()
 {
     UIManager::GetInstance().ClearContent(UIType::Menu);
-    UIManager::GetInstance().AddContent(UIType::Menu, "1. ³»ºÎ Å½»ö (¸ó½ºÅÍ Á¶¿ì)   2. ¸¶À»·Î ±ÍÈ¯ÇÑ´Ù ");
-    UIManager::GetInstance().AddContent(UIType::Menu, "¾î¶² Çàµ¿À» ÇÏ½Ã°Ú½À´Ï±î?: ");
+    if (Character::GetInstance().IsMaxLevel()) {
+        UIManager::GetInstance().AddContent(UIType::Menu, "ì´ ì•ì—ì„œ ê°•ë ¥í•œ ê¸°ìš´ì´ ëŠê»´ì§‘ë‹ˆë‹¤... ");
+    }
+    UIManager::GetInstance().AddContent(UIType::Menu, "1. ë‚´ë¶€ íƒìƒ‰ (ëª¬ìŠ¤í„° ì¡°ìš°)   2. ë§ˆì„ë¡œ ê·€í™˜í•œë‹¤ ");
+    UIManager::GetInstance().AddContent(UIType::Menu, "ì–´ë–¤ í–‰ë™ì„ í•˜ì‹œê² ìŠµë‹ˆê¹Œ?: ");
 }
 
 void DungeonScene::ProcessNormalEvent(const Event& e)
@@ -35,22 +40,24 @@ void DungeonScene::ProcessNormalEvent(const Event& e)
 
     switch (e.key_code) {
     case '1':
-    {
-        UIManager::GetInstance().AddContent(UIType::Log, "[Á¶¿ì] ¸ó½ºÅÍ¿Í Á¶¿ìÇß½À´Ï´Ù!");
-        int next_scene = static_cast<int>(SceneType::Battle);
-        float max_time = 3.f;
+        UIManager::GetInstance().AddContent(UIType::Log, "[ì¡°ìš°] ëª¬ìŠ¤í„°ì™€ ì¡°ìš°í–ˆìŠµë‹ˆë‹¤!");
 
-        PushScene(SceneType::Encounter, std::to_string(next_scene) + " " + std::to_string(max_time));
+        // dataê°€ 1ì´ë©´ ë³´ìŠ¤ì „ ì§„ì…
+        if (Character::GetInstance().IsMaxLevel()) {
+            PushScene(SceneType::Encounter, SceneType::Battle, 2.f, 1);
+        }
+        else {
+            PushScene(SceneType::Encounter, SceneType::Battle, 2.f, 0);
+        }
         break;
-    }
 
     case '2':
-        UIManager::GetInstance().AddContent(UIType::Log, "[ÀÌµ¿] ¸¶À»·Î ±ÍÈ¯ÇÕ´Ï´Ù...");
+        UIManager::GetInstance().AddContent(UIType::Log, "[ì´ë™] ë§ˆì„ë¡œ ê·€í™˜í•©ë‹ˆë‹¤...");
         ChangeScene(SceneType::Town);
         break;
     
     default:
-        UIManager::GetInstance().AddContent(UIType::Menu, "Àß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù.");
+        UIManager::GetInstance().AddContent(UIType::Menu, "ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤.");
         break;
     }
 }

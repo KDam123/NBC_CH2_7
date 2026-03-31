@@ -10,6 +10,7 @@ class Character
 private:
 	std::string name;
 	int level;
+	const int max_level = 10;
 	int health;
 	int max_health;
 	int attack;
@@ -28,6 +29,8 @@ public:
 	Character(const Character&) = delete;
 	Character& operator=(const Character&) = delete;
 	static Character& GetInstance(const std::string& name = "Player");
+
+	void ClearInventory();
 
 	void DisplayStatus() const;
 
@@ -55,6 +58,8 @@ public:
 	
 	void ModifyMaxHealth(int amount);
 
+	void Reset();
+
 	std::unique_ptr<IItem> EquipWeapon(std::unique_ptr<IItem> new_weapon);
 
 	std::unique_ptr<IItem> EquipArmor(std::unique_ptr<IItem> new_armor);
@@ -66,6 +71,8 @@ public:
 	void ApplyAttackBuff(int amount);
 
 	void ClearBuffs();
+
+	bool IsMaxLevel() const;
 
 	// getters
 	int GetLevel() const { return level; }
@@ -104,4 +111,6 @@ public:
 	void SetExperience(int new_experience) { experience = new_experience; }
 
 	void SetGold(int new_gold) { gold = new_gold; }
+
+	void SetName(const std::string& newName) { name = newName; }
 };

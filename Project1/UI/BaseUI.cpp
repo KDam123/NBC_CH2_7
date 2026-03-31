@@ -18,6 +18,8 @@ void BaseUI::AddContents(std::string_view msg)
     if (static_cast<int>(contents.size()) > max_lines) {
         contents.pop_front(); // 꽉 차면 오래된 것 삭제
     }
+
+    all_contents.push_back(std::string(msg));  // 전체 로그에 추가.
 }
 
 void BaseUI::LoadAsciiArt(const std::string& path)
