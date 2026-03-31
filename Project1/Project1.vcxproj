@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Core\DungeonMapState.h" />
     <ClInclude Include="Core\SaveLoadManager.h" />
     <ClInclude Include="DropTable.h" />
     <ClInclude Include="Core\ItemDataBase.h" />
@@ -148,6 +149,7 @@
     <ClInclude Include="Monsters\Troll.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Core\DungeonMapState.cpp" />
     <ClCompile Include="Core\ItemDataBase.cpp" />
     <ClCompile Include="Core\SaveLoadManager.cpp" />
     <ClCompile Include="Scene\EndingScene.cpp" />

@@ -32,6 +32,7 @@
     <ClCompile Include="Items\Consumable\AttackBoost.cpp" />
     <ClCompile Include="Items\Consumable\HealthPotioin.cpp" />
     <ClCompile Include="Scene\EncounterScene.cpp" />
+    <ClCompile Include="Core\DungeonMapState.cpp" />
     <ClCompile Include="Monsters\BossMonster.cpp" />
     <ClCompile Include="Scene\EndingScene.cpp" />
     <ClCompile Include="Core\SaveLoadManager.cpp" />
@@ -72,6 +73,7 @@
     <ClInclude Include="Items\Consumable\AttackBoost.h" />
     <ClInclude Include="Items\Consumable\HealthPotion.h" />
     <ClInclude Include="Scene\EncounterScene.h" />
+    <ClInclude Include="Core\DungeonMapState.h" />
     <ClInclude Include="Core\SaveLoadManager.h" />
   </ItemGroup>
   <ItemGroup>
