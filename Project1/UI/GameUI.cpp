@@ -6,7 +6,33 @@
 #include "Items/Consumable/ConsumableItem.h"
 #include "Core/ItemDataBase.h"
 #include "Core/LogManager.h"
+#include <windows.h>
 
+
+int GetVisualWidth(const std::string& str)
+{
+    if (str.empty()) {
+        return 0;
+    }
+
+    int wlen = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, NULL, 0);
+    if (wlen <= 0) {
+        return 0;
+    }
+
+    std::wstring wstr(wlen, 0);
+    MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, &wstr[0], wlen);
+
+    int visual_width = 0;
+    for (wchar_t wc : wstr) {
+        if (wc == L'\0') {
+            break;
+        }
+        // 영어(ASCII)는 1칸, 한글 등 그 외의 문자는 2칸으로 계산
+        visual_width += (wc <= 127) ? 1 : 2;
+    }
+    return visual_width;
+}
 
 BorderUI::BorderUI(int x, int y, int w, int h) : BaseUI(x, y, w, h)
 {
@@ -175,7 +201,7 @@ int ItemListUI::GetItemsPerPage() const
 
 void ItemListUI::RenderTitle(const std::string& title)
 {
-    int title_x = start_x + (width - static_cast<int>(title.length())) / 2;
+    int title_x = start_x + (width - GetVisualWidth(title)) / 2;
     RenderSystem::GetInstance().PrintText(title_x, start_y + 1, title);
 }
 
@@ -315,12 +341,16 @@ void ShopUI::Render()
 
                 // 판매는 원가의 60퍼 가격으로 책정
                 const ItemData& data = ItemDataBase::GetData(item->GetID());
-                item_text += data.name;
+
+                std::string stack_text = (item->GetType() == ItemType::Consumable) ?
+                    " x" + std::to_string(static_cast<ConsumableItem*>(item)->GetCount()) :
+                    "";
+                item_text += (data.name + stack_text);
                 gold_text = std::to_string(ItemDataBase::GetSellPrice(item->GetID())) + " Gold";
             }
 
             // 좌우 여백 2칸, 텍스트 제외하고 전부 공백 개수
-            int black_count = width - 4 - static_cast<int>(item_text.length() + gold_text.length());
+            int black_count = width - 4 - (GetVisualWidth(item_text) + GetVisualWidth(gold_text));
             if (black_count < 1) {
                 black_count = 1;
             }
@@ -362,19 +392,19 @@ void ItemConfirmUI::Render()
     // 질문 출력
     int text_y = start_y + 1;
     std::string question = data.name + "을(를) " + action_text;
-    int text_x = start_x + (width - static_cast<int>(question.length())) / 2;
+    int text_x = start_x + (width - GetVisualWidth(question)) / 2;
     RenderSystem::GetInstance().PrintText(text_x, text_y++, question);
 
     // 설명 출력
     std::string desc = data.desc;
-    text_x = start_x + (width - static_cast<int>(desc.length())) / 2;
+    text_x = start_x + (width - GetVisualWidth(desc)) / 2;
     RenderSystem::GetInstance().PrintText(text_x, text_y++, desc);
     ++text_y;
     ++text_y;
 
     // 선택지 출력
     std::string option = "[Y] YES  [N] NO";
-    text_x = start_x + (width - static_cast<int>(option.length())) / 2;
+    text_x = start_x + (width - GetVisualWidth(option)) / 2;
     RenderSystem::GetInstance().PrintText(text_x, text_y, option);
 }
 
