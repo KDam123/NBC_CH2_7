@@ -55,7 +55,6 @@ private:
     int count_escape_ = 0;
     int count_death_ = 0;
     int count_use_ = 0;
-    int count_total_kills_ = 0;
 
     // 외부에서 new 못하도록 차단
     UIManager();

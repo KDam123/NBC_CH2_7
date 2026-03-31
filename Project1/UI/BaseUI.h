@@ -26,6 +26,9 @@ public:
 	std::deque<std::string> all_contents; 
 	const std::deque<std::string>& GetAllContents() const { return all_contents; }
 
+	//전체 로그 초기화용
+	void ClearAllContents() { contents.clear(); all_contents.clear(); }
+
 protected:
 	int start_x;
 	int start_y;

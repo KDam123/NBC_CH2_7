@@ -32,10 +32,6 @@ void GameManager::Init()
 	// 초기 씬 = 타이틀
 	scene_stack.push_back(SceneFactory::CreateScene(SceneType::Title));
 	scene_stack.back()->Init();
-
-	
-	UIManager::GetInstance().LoadLogFromFile("gamelog.txt"); //게임 시작시 로그 기록 불러옴. 없으면 넘긴다.
-
 }
 
 // 게임 루프 
@@ -99,8 +95,6 @@ void GameManager::Run()
 
 			RenderSystem::GetInstance().Draw();
 		}
-		//게임 종료시 로그 저장
-		UIManager::GetInstance().SaveLogToFile("gamelog.txt"); 
 
 		// 짧게 휴식
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
