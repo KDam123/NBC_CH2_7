@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Scene/BaseScene.h"
 
 #include <memory>
@@ -7,7 +7,7 @@
 class CharacterUI;
 class MonsterUI;
 class BattleManager;
-class Monster;
+class Monster; 
 
 enum class BattleState {
 	Act,
@@ -15,7 +15,7 @@ enum class BattleState {
 	UseItem
 };
 
-class BattleScene : public BaseScene
+class BattleScene : public BaseScene 
 {
 public:
 	BattleScene();

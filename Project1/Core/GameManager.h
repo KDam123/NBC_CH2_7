@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Common/common.h"
 #include <memory>
 #include <queue>
@@ -14,12 +14,12 @@ public:
 		static GameManager instance;
 		return instance;
 	}
-
+     
 	GameManager(const GameManager&) = delete;
 	GameManager& operator=(const GameManager&) = delete;
 
 	void Init();
-	void Run();
+	void Run(); 
 	void Release();
 	void PushEvent(const Event& ev);
 
@@ -29,13 +29,13 @@ private:
 	bool is_running = true;
 	std::unique_ptr<BattleManager> battle_manager;
 
-	// ¾À °ü·Ã
+	// ì”¬ ê´€ë ¨
 	std::vector<std::unique_ptr<BaseScene>> scene_stack;
 	SceneOp scene_op;
 	SceneType next_scene;
 	std::string next_scene_data;
 
-	// ÀÌº¥Æ® Å¥
+	// ì´ë²¤íŠ¸ í
 	std::queue<Event> event_queue;
 
 

@@ -1,10 +1,11 @@
-#include "BattleManager.h"
+ï»¿#include "BattleManager.h"
 #include "Characters/Character.h"
 #include "Monsters/Monster.h"
 #include "Items/Item.h"
 #include "UI/UIManager.h"
 #include "Common/common.h"
 #include "Items/ItemFactory.h"
+#include "Core/LogManager.h"
 
 BattleManager::BattleManager() = default;
 BattleManager::~BattleManager() = default;
@@ -39,36 +40,36 @@ void BattleManager::PlayerAttack(size_t target)
 		return;
 	}
 
-	// ÀÎµ¦½º À¯È¿¼º °Ë»ç
+	// ì¸ë±ìŠ¤ ìœ íš¨ì„± ê²€ì‚¬
 	if (target >= monsters.size()) {
 		return;
 	}
 	
 	Monster* monster = monsters[target];
 
-	// ¸ó½ºÅÍ À¯È¿¼º °Ë»ç
+	// ëª¬ìŠ¤í„° ìœ íš¨ì„± ê²€ì‚¬
 	if (!monster || monster->IsDead()) {
 		return;
 	}
-
+     
 	int damage = player.GetTotalAttack();
 	monster->TakeDamage(damage);
 	
-	UIManager::GetInstance().AddContent(UIType::Log,
-		"[°ø°İ] " + std::string(monster->GetName()) + "[" + std::to_string(target + 1) +
-		"]¿¡°Ô " + std::to_string(damage) + "µ¥¹ÌÁö¸¦ ÀÔÇû½À´Ï´Ù!");
+	LogManager::GetInstance().AddLog(
+		"[ê³µê²©] " + std::string(monster->GetName()) + "[" + std::to_string(target + 1) +
+		"]ì—ê²Œ " + std::to_string(damage) + "ë°ë¯¸ì§€ë¥¼ ì…í˜”ìŠµë‹ˆë‹¤!"); 
 
-	// ¸ó½ºÅÍ »ç¸Á ½Ã
+	// ëª¬ìŠ¤í„° ì‚¬ë§ ì‹œ
 	if (monster->IsDead()) {
 		
-		// Å³º¸µå¿¡ Å³ Ãß°¡
-		UIManager::GetInstance().OnMonsterKilled(monster->GetName());  
+		// í‚¬ë³´ë“œì— í‚¬ ì¶”ê°€
+		LogManager::GetInstance().AddKill(monster->GetName());
 
-		// º¸»ó ´©Àû
+		// ë³´ìƒ ëˆ„ì 
 		total_exp += 20;
 		total_gold += RandomUtil::GetRange(10, 20);
 		
-		// ¾ÆÀÌÅÛ µå·ÓÅ×ÀÌºí¿¡¼­ ¹Ş¾Æ¿Í¼­ Ãß°¡
+		// ì•„ì´í…œ ë“œë¡­í…Œì´ë¸”ì—ì„œ ë°›ì•„ì™€ì„œ ì¶”ê°€
 		auto item_ids = monster->GetDropItems();
 		for (const auto& item_id : item_ids) {
 			auto item = ItemFactory::CreateItem(item_id);
@@ -93,12 +94,12 @@ void BattleManager::MonstersAttack()
 			int damage = monster->GetAttack();
 			player.TakeDamage(damage);
 
-			UIManager::GetInstance().AddContent(UIType::Log,
-				"[ÇÇ°İ] " + std::string(monster->GetName()) + "¿¡°Ô " + std::to_string(damage) + "ÀÇ ÇÇÇØ¸¦ ¹Ş¾Ò½À´Ï´Ù!");
+			LogManager::GetInstance().AddLog(
+				"[í”¼ê²©] " + std::string(monster->GetName()) + "ì—ê²Œ " + std::to_string(damage) + "ì˜ í”¼í•´ë¥¼ ë°›ì•˜ìŠµë‹ˆë‹¤!");
 
 			if (player.IsDead()) {
-				UIManager::GetInstance().AddContent(UIType::Log,
-					"[»ç¸Á] " + std::string(monster->GetName()) + "¿¡ ÀÇÇØ »ç¸ÁÇÏ¿´½À´Ï´Ù...");
+				LogManager::GetInstance().AddLog(
+					"[ì‚¬ë§] " + std::string(monster->GetName()) + "ì— ì˜í•´ ì‚¬ë§í•˜ì˜€ìŠµë‹ˆë‹¤...");
 				break;
 			}
 		}
@@ -135,13 +136,13 @@ void BattleManager::DistributedReward()
 	player.GainExp(total_exp);
 	player.GainGold(total_gold);
 
-	UIManager::GetInstance().AddContent(UIType::Log,
-		"[º¸»ó] °æÇèÄ¡¸¦ " + std::to_string(total_exp) + ", °ñµå¸¦ " + std::to_string(total_gold) + "È¹µæÇÏ¿´½À´Ï´Ù!");
+	LogManager::GetInstance().AddLog(
+		"[ë³´ìƒ] ê²½í—˜ì¹˜ë¥¼ " + std::to_string(total_exp) + ", ê³¨ë“œë¥¼ " + std::to_string(total_gold) + "íšë“í•˜ì˜€ìŠµë‹ˆë‹¤!");
 
 
 	for (auto& item : items) {
-		UIManager::GetInstance().AddContent(UIType::Log,
-			"[º¸»ó] " + item->GetName() + "À» È¹µæÇÏ¿´½À´Ï´Ù!");
+		LogManager::GetInstance().AddLog(
+			"[ë³´ìƒ] " + item->GetName() + "ì„ íšë“í•˜ì˜€ìŠµë‹ˆë‹¤!");
 
 		player.AddItem(std::move(item));
 	}

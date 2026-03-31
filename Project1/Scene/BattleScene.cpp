@@ -1,4 +1,4 @@
-#include "BattleScene.h"
+﻿#include "BattleScene.h"
 #include "Core/GameManager.h"
 #include "GamePlay/Battle/BattleManager.h"
 #include "UI/UIManager.h"
@@ -7,6 +7,9 @@
 #include "Core/DungeonMapState.h"
 #include "Monsters/Monster.h"
 #include "Monsters/MonsterFactory.h"
+#include "Core/LogManager.h"
+#include "Core/SaveLoadManager.h"
+
 
 constexpr int MIN_MONSTER_COUNT = 1;
 constexpr int MAX_MONSTER_COUNT = 3;
@@ -58,13 +61,13 @@ void BattleScene::Init()
 	position.reserve(MAX_MONSTER_COUNT);
 	
 	// 몬스터 마리수 별 배치
-	switch (monster_count) {
+	switch (monster_count) { 
 	case 1:
 		position = { center };
 		break;
 
 	case 2:
-		position = { center - diff / 2 - 1, center + diff / 2 + 1 };
+		position = { center - diff / 2 - 1, center + diff / 2 + 1 }; 
 		break;
 
 	case 3:
@@ -185,10 +188,18 @@ void BattleScene::ProcessActPhase(int key_code)
 		break;
 
 	case '0':
-		UIManager::GetInstance().AddContent(UIType::Log, "[도망] 무사히 도망쳤습니다.");
-		DungeonMapState::SetRandomBattleMap();
-		ChangeScene(SceneType::Dungeon);
-		return;
+	{
+		if (!is_boss_battle) {
+			UIManager::GetInstance().AddContent(UIType::Log, "[도망] 무사히 도망쳤습니다.");
+			DungeonMapState::SetRandomBattleMap();
+			ChangeScene(SceneType::Dungeon);
+		}
+		else {
+			SetMenu();
+			UIManager::GetInstance().AddContent(UIType::Menu, "도망칠 수 없습니다!!");
+		}
+		break;
+	}
 
 	default:
 		break;
@@ -221,14 +232,23 @@ void BattleScene::ProcessTargetPhase(int key_code)
 		if (battle_manager->IsBattleOver()) {
 			// 플레이어 사망으로 종료라면
 			if (Character::GetInstance().IsDead()) {
-				UIManager::GetInstance().AddContent(UIType::Log, "게임 오버! 타이틀로 돌아갑니다...");
+				LogManager::GetInstance().AddLog( "게임 오버! 타이틀로 돌아갑니다...");
+
+				auto& player = Character::GetInstance();
+				SaveLoadManager::Save(player);
+				LogManager::GetInstance().SaveLogToFile("Log/Log.txt", player.GetName());
 				ChangeScene(SceneType::Title);
 				return;
 			}
 			else {	// 플레이어 승리라면
-				battle_manager->DistributedReward();
-				DungeonMapState::SetRandomBattleMap();
-				ChangeScene(SceneType::Dungeon);
+                if (is_boss_battle) {
+                    ChangeScene(SceneType::Ending);
+                }
+                else {
+                    battle_manager->DistributedReward();
+                    DungeonMapState::SetRandomBattleMap();
+                    ChangeScene(SceneType::Dungeon);
+                }
 				return;
 			}
 		}

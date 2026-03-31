@@ -1,8 +1,8 @@
-#pragma once
+癤�#pragma once
 #include <deque>
 #include <string>
 
-class Character;
+class Character; 
 
 class BaseUI
 {
@@ -10,7 +10,7 @@ public:
 	BaseUI(int x, int y, int w, int h);
 	BaseUI(int x, int y);
 	virtual ~BaseUI() = default;
-
+     
 	virtual void AddContents(std::string_view msg);
 	void LoadAsciiArt(const std::string& path);
 	void Clear();
@@ -22,12 +22,8 @@ public:
 	virtual void Render() = 0;
 	virtual void Update(float delta_time) {}
 
-	//전체 로그 저장용 
-	std::deque<std::string> all_contents; 
-	const std::deque<std::string>& GetAllContents() const { return all_contents; }
-
-	//전체 로그 초기화용
-	void ClearAllContents() { contents.clear(); all_contents.clear(); }
+	int GetWidth() const;
+	int GetHeight() const;
 
 protected:
 	int start_x;

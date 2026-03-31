@@ -1,10 +1,10 @@
-#pragma once
+﻿#pragma once
 #include <vector>
 #include <memory>
 
 class IItem;
 class Monster;
-class IItem;
+class IItem; 
 
 class BattleManager
 {
@@ -14,7 +14,7 @@ public:
 
 	void Release();
 
-	void Init(const std::vector<std::unique_ptr<Monster>>& monsters);
+	void Init(const std::vector<std::unique_ptr<Monster>>& monsters); 
 	void PlayerAttack(size_t target);
 	void MonstersAttack();
 	bool IsBattleOver() const;
