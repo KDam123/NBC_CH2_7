@@ -163,6 +163,10 @@ public:
 
 	void Render() override;
 	void AddKill(const std::string& monster_name);
+	void ClearKills() { kill_count_.clear(); } // 킬보드 초기화 함수
+
+	// 킬보드 내용 txt 파일에 저장하기위해
+	const std::unordered_map<std::string, int>& GetKillCount() const { return kill_count_; }
 
 private:
 	std::string top_border;
