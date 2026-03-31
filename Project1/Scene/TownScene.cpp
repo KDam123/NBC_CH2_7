@@ -48,6 +48,10 @@ void TownScene::ProcessNormalEvent(const Event& e)
         ChangeScene(SceneType::Dungeon);
         break;
 
+    case '.':
+        Character::GetInstance().GainExp(100);
+        break;
+
     default:
         UIManager::GetInstance().AddContent(UIType::Menu, "잘못된 입력입니다.");
         break;

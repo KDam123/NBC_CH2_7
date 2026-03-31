@@ -9,7 +9,7 @@ using namespace std;
 
 void SaveLoadManager::Save(Character& player) {
     // 1. 기존 파일 읽기
-    ifstream infile("save.txt");
+    ifstream infile("Save/save.txt");
     stringstream buffer;
     string line;
     bool skip = false;
@@ -44,7 +44,7 @@ void SaveLoadManager::Save(Character& player) {
     infile.close();
 
     // 2. 파일 다시 열고 기존 내용 + 새 캐릭터 블록 저장
-    ofstream outfile("save.txt");
+    ofstream outfile("Save/save.txt");
     outfile << buffer.str();
 
     // 3. 새 블록 추가
@@ -71,7 +71,7 @@ void SaveLoadManager::Save(Character& player) {
 }
 
 bool SaveLoadManager::Load(Character& player, const std::string& targetName) {
-    std::ifstream file("save.txt");
+    std::ifstream file("Save/save.txt");
     if (!file.is_open()) return false;
 
     std::string line;
@@ -82,7 +82,7 @@ bool SaveLoadManager::Load(Character& player, const std::string& targetName) {
             std::string name;
             std::getline(file, name);
 
-            // ❌ 다른 캐릭터면 스킵
+            // X 다른 캐릭터면 스킵
             if (name != targetName) {
                 std::getline(file, line); // stats
                 std::getline(file, line); // inventory
@@ -91,7 +91,7 @@ bool SaveLoadManager::Load(Character& player, const std::string& targetName) {
                 continue;
             }
 
-            // ⭐ 찾았으면 초기화
+            // * 찾았으면 초기화
             player.Reset();
             player.SetName(name);
 
@@ -107,7 +107,7 @@ bool SaveLoadManager::Load(Character& player, const std::string& targetName) {
 
             file.ignore(); // 줄바꿈 제거
 
-            // ⭐ 인벤토리
+            // * 인벤토리
             std::getline(file, line);
             std::stringstream ss(line);
             int id;
@@ -119,7 +119,7 @@ bool SaveLoadManager::Load(Character& player, const std::string& targetName) {
                 }
             }
 
-            // ⭐ 장비
+            // * 장비
             int weaponID, armorID;
             file >> weaponID;
             file >> armorID;

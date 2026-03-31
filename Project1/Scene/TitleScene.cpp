@@ -4,7 +4,8 @@
 #include "Characters/Character.h"
 #include "UI/UIManager.h"
 #include "UI/GameUI.h"
-#include "SaveLoadManager.h"
+#include "Core/SaveLoadManager.h"
+
 constexpr int MAX_NAME_LENGTH = 10;
 
 void TitleScene::Init()
@@ -36,7 +37,9 @@ void TitleScene::ProcessEvent(const Event& e)
     SetMenu();
     
     // 알파벳 입력시 이름 입력
-   if ((e.key_code >= 'a' && e.key_code <= 'z') || (e.key_code >= 'A' && e.key_code <= 'Z')) {
+   if ((e.key_code >= 'a' && e.key_code <= 'z') || (e.key_code >= 'A' && e.key_code <= 'Z') || 
+       (e.key_code >= '0' && e.key_code <= '9'))
+   {
         if (name.size() < MAX_NAME_LENGTH) {
             name += char(e.key_code);
         }
@@ -70,4 +73,9 @@ void TitleScene::ProcessEvent(const Event& e)
 
 void TitleScene::Update(float delta_time)
 {
+}
+
+bool TitleScene::IsExitable() const
+{
+    return false;
 }

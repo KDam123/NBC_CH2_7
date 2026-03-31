@@ -4,8 +4,8 @@
 #include "UI/UIManager.h"
 #include "UI/GameUI.h"
 #include "Characters/Character.h"
-#include "Monster.h"
-#include "MonsterFactory.h"
+#include "Monsters/Monster.h"
+#include "Monsters/MonsterFactory.h"
 
 constexpr int MIN_MONSTER_COUNT = 1;
 constexpr int MAX_MONSTER_COUNT = 3;
@@ -18,9 +18,15 @@ void BattleScene::Init()
 {
 	battle_manager = GameManager::GetInstance().GetBattleManager();
 
-	int monster_count = RandomUtil::GetRange(MIN_MONSTER_COUNT, MAX_MONSTER_COUNT);
-	for (int i = 0; i < monster_count; ++i) {
-		monsters.push_back(MonsterFactory::RandomCreateMonster(Character::GetInstance().GetLevel()));
+	int monster_count = 1;
+	if (is_boss_battle) {
+		monsters.push_back(MonsterFactory::CreateMonster(MonsterType::Boss, Character::GetInstance().GetLevel()));
+	}
+	else {
+		monster_count = RandomUtil::GetRange(MIN_MONSTER_COUNT, MAX_MONSTER_COUNT);
+		for (int i = 0; i < monster_count; ++i) {
+			monsters.push_back(MonsterFactory::RandomCreateMonster(Character::GetInstance().GetLevel()));
+		}
 	}
 
 	if (!battle_manager || monsters.empty()) {
@@ -38,23 +44,40 @@ void BattleScene::Init()
 	scene_uis.push_back(std::move(bg));
 
 
+	int center = 20;
 	// ----------------
-	// 플레이어 아스키 아트  x : 5, y : 30
-	player_ui = std::make_unique<CharacterUI>(5, 20);
+	// 플레이어 아스키 아트  x : 5, y : 20
+	player_ui = std::make_unique<CharacterUI>(5, center);
 	player_ui->LoadAsciiArt("Resource/Player.txt");    
 	player_ui->SetTarget(&Character::GetInstance()); 
 
-	// 몬스터 아스키 아트  x : 45, y : 10 + (diff)
-	int monster_y = 10;
-	int diff = 10;
+	// 몬스터 아스키 아트
+	int diff = 15;
+	std::vector<int> position;
+	position.reserve(MAX_MONSTER_COUNT);
+	
+	// 몬스터 마리수 별 배치
+	switch (monster_count) {
+	case 1:
+		position = { center };
+		break;
+
+	case 2:
+		position = { center - diff / 2 - 1, center + diff / 2 + 1 };
+		break;
+
+	case 3:
+		position = { center - diff, center, center + diff };
+		break;
+	}
+
+
 	for (int i = 0; i < monster_count; ++i) {
-		auto monster_ui = std::make_unique<MonsterUI>(45, monster_y);
+		auto monster_ui = std::make_unique<MonsterUI>(45, position[i]);
 		monster_ui->LoadAsciiArt(monsters[i]->GetAsciiArtPath());
 		monster_ui->SetTarget(monsters[i].get());
 		monster_uis.push_back(std::move(monster_ui));
-		monster_y += diff;
 	}
-
 	// ----------------
 
 	SetMenu();
@@ -144,6 +167,14 @@ void BattleScene::Release()
 	Character::GetInstance().ClearBuffs();
 }
 
+void BattleScene::SetSceneData(const std::string& data)
+{
+	if (!data.empty()) {
+		is_boss_battle = (std::stoi(data) == 1);	// 1이면 보스전
+	}
+}
+
+
 // private 함수
 void BattleScene::ProcessActPhase(int key_code)
 {
@@ -153,9 +184,17 @@ void BattleScene::ProcessActPhase(int key_code)
 		break;
 
 	case '0':
-		UIManager::GetInstance().AddContent(UIType::Log, "[도망] 무사히 도망쳤습니다.");
-		PopScene(); // 도망 -> 이전 씬으로 복귀!
-		return;
+	{
+		if (!is_boss_battle) {
+			UIManager::GetInstance().AddContent(UIType::Log, "[도망] 무사히 도망쳤습니다.");
+			PopScene(); // 도망 -> 이전 씬으로 복귀!
+		}
+		else {
+			SetMenu();
+			UIManager::GetInstance().AddContent(UIType::Menu, "도망칠 수 없습니다!!");
+		}
+		break;
+	}
 
 	default:
 		break;
@@ -193,8 +232,13 @@ void BattleScene::ProcessTargetPhase(int key_code)
 				return;
 			}
 			else {	// 플레이어 승리라면
-				battle_manager->DistributedReward();
-				PopScene();
+				if (is_boss_battle) {
+					ChangeScene(SceneType::Ending);
+				}
+				else {
+					battle_manager->DistributedReward();
+					PopScene();
+				}
 				return;
 			}
 		}
