@@ -46,7 +46,7 @@ public:
 private:
     std::vector<std::unique_ptr<BaseUI>> uis;
 
-    int count_attack_ = 0;
+    int count_attack_ = 0; //각 이벤트 횟수 저장 변수
     int count_damage_ = 0;
     int count_encounter_ = 0;
     int count_move_ = 0;
