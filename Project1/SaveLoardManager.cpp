@@ -8,102 +8,135 @@
 using namespace std;
 
 void SaveLoadManager::Save(Character& player) {
-    ofstream file("save.txt");
+    // 1. 기존 파일 읽기
+    ifstream infile("save.txt");
+    stringstream buffer;
+    string line;
+    bool skip = false;
 
-    if (!file.is_open()) return;
+    while (getline(infile, line)) {
+        if (line == "[PLAYER]") {
+            string name_line;
+            getline(infile, name_line);
 
-    // ⭐ 1. 장착 해제 (임시)
-    auto weapon = player.UnequipWeapon();
-    auto armor = player.UnequipArmor();
+            if (name_line == player.GetName()) {
+                // 같은 이름 블록 스킵
+                skip = true;
+                // stats + inventory + weapon + armor 읽고 무시
+                for (int i = 0; i < 4; ++i) getline(infile, line);
+                continue;
+            }
+            else {
+                buffer << "[PLAYER]\n" << name_line << "\n";
+                for (int i = 0; i < 4; ++i) {
+                    getline(infile, line);
+                    buffer << line << "\n";
+                }
+            }
+        }
+        else if (!skip) {
+            buffer << line << "\n";
+        }
+        else {
+            skip = false; // 스킵 후 다시 정상 읽기
+        }
+    }
+    infile.close();
 
-    // 2. 스탯 저장 (순수 상태)
-    file << player.GetName() << "\n";
-    file << player.GetLevel() << " "
+    // 2. 파일 다시 열고 기존 내용 + 새 캐릭터 블록 저장
+    ofstream outfile("save.txt");
+    outfile << buffer.str();
+
+    // 3. 새 블록 추가
+    outfile << "[PLAYER]\n";
+    outfile << player.GetName() << "\n";
+    outfile << player.GetLevel() << " "
         << player.GetHealth() << " "
         << player.GetMaxHealth() << " "
         << player.GetAttack() << " "
         << player.GetExperience() << " "
         << player.GetGold() << "\n";
 
-    // 3. 인벤토리 저장
+    // 인벤토리
     const auto& inv = player.GetInventory();
     for (const auto& item : inv) {
-        file << static_cast<int>(item->GetID()) << " ";
+        outfile << static_cast<int>(item->GetID()) << " ";
     }
-    file << "\n";
+    outfile << "\n";
 
-    // 4. 장착 아이템 ID 저장
-    if (weapon)
-        file << static_cast<int>(weapon->GetID()) << "\n";
-    else
-        file << "0\n";
+    // 장비
+    outfile << (player.GetEquippedWeapon() ? static_cast<int>(player.GetEquippedWeapon()->GetID()) : 0) << "\n";
+    outfile << (player.GetEquippedArmor() ? static_cast<int>(player.GetEquippedArmor()->GetID()) : 0) << "\n";
 
-    if (armor)
-        file << static_cast<int>(armor->GetID()) << "\n";
-    else
-        file << "0\n";
-
-    // ⭐ 5. 다시 장착 (복구)
-    if (weapon)
-        player.EquipWeapon(std::move(weapon));
-
-    if (armor)
-        player.EquipArmor(std::move(armor));
-
-    cout << "저장 완료\n";
 }
 
-void SaveLoadManager::Load(Character& player) {
-    ifstream file("save.txt");
+bool SaveLoadManager::Load(Character& player, const std::string& targetName) {
+    std::ifstream file("save.txt");
+    if (!file.is_open()) return false;
 
-    if (!file.is_open()) return;
+    std::string line;
 
-    string name;
-    int level, hp, max_hp, atk, exp, gold;
+    while (std::getline(file, line)) {
+        if (line == "[PLAYER]") {
 
-    getline(file, name);
-    file >> level >> hp >> max_hp >> atk >> exp >> gold;
+            std::string name;
+            std::getline(file, name);
 
-    // 초기화
-    
+            // ❌ 다른 캐릭터면 스킵
+            if (name != targetName) {
+                std::getline(file, line); // stats
+                std::getline(file, line); // inventory
+                std::getline(file, line); // weapon
+                std::getline(file, line); // armor
+                continue;
+            }
 
-    // 스탯 적용
-    player.SetLevel(level);
-    player.SetHealth(hp);
-    player.SetMaxHealth(max_hp);
-    player.SetAttack(atk);
-    player.SetExperience(exp);
-    player.SetGold(gold);
+            // ⭐ 찾았으면 초기화
+            player.Reset();
+            player.SetName(name);
 
-    // 인벤토리
-    file.ignore();
-    string line;
-    getline(file, line);
+            int level, hp, max_hp, atk, exp, gold;
+            file >> level >> hp >> max_hp >> atk >> exp >> gold;
 
-    stringstream ss(line);
-    int id;
+            player.SetLevel(level);
+            player.SetHealth(hp);
+            player.SetMaxHealth(max_hp);
+            player.SetAttack(atk);
+            player.SetExperience(exp);
+            player.SetGold(gold);
 
-    while (ss >> id) {
-        auto item = ItemFactory::CreateItem(static_cast<ItemID>(id));
-        if (item) {
-            player.AddItem(std::move(item));
+            file.ignore(); // 줄바꿈 제거
+
+            // ⭐ 인벤토리
+            std::getline(file, line);
+            std::stringstream ss(line);
+            int id;
+
+            while (ss >> id) {
+                auto item = ItemFactory::CreateItem(static_cast<ItemID>(id));
+                if (item) {
+                    player.AddItem(std::move(item));
+                }
+            }
+
+            // ⭐ 장비
+            int weaponID, armorID;
+            file >> weaponID;
+            file >> armorID;
+
+            if (weaponID != 0) {
+                auto weapon = ItemFactory::CreateItem(static_cast<ItemID>(weaponID));
+                player.EquipWeapon(std::move(weapon));
+            }
+
+            if (armorID != 0) {
+                auto armor = ItemFactory::CreateItem(static_cast<ItemID>(armorID));
+                player.EquipArmor(std::move(armor));
+            }
+
+            return true;
         }
     }
 
-    // 장착 복원
-    int weaponID, armorID;
-    file >> weaponID;
-    file >> armorID;
-
-    if (weaponID != 0) {
-        auto weapon = ItemFactory::CreateItem(static_cast<ItemID>(weaponID));
-        player.EquipWeapon(std::move(weapon));
-    }
-
-    if (armorID != 0) {
-        auto armor = ItemFactory::CreateItem(static_cast<ItemID>(armorID));
-        player.EquipArmor(std::move(armor));
-    }
-
-    cout << "로드 완료\n";
+    return false;
 }

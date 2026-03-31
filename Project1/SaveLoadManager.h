@@ -5,6 +5,6 @@ class Character;
 
 class SaveLoadManager {
 public:
-    void Save(Character& player);
-    void Load(Character& player);
+    static void Save(Character& player);
+    static bool Load(Character& player, const std::string& name);
 };

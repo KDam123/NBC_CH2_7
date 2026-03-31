@@ -239,3 +239,20 @@ void Character::ClearBuffs()
 	bonus_attack = 0;
 }
 
+void Character::ClearInventory() {
+	inventory.clear();
+}
+
+void Character::Reset() {
+	level = 1;
+	health = 200;
+	max_health = 200;
+	attack = 30;
+	bonus_attack = 0;
+	experience = 0;
+	gold = 0;
+
+	UnequipWeapon();
+	UnequipArmor();
+	ClearInventory();
+}

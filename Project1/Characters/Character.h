@@ -57,6 +57,8 @@ public:
 	
 	void ModifyMaxHealth(int amount);
 
+	void Reset();
+
 	std::unique_ptr<IItem> EquipWeapon(std::unique_ptr<IItem> new_weapon);
 
 	std::unique_ptr<IItem> EquipArmor(std::unique_ptr<IItem> new_armor);
@@ -106,4 +108,6 @@ public:
 	void SetExperience(int new_experience) { experience = new_experience; }
 
 	void SetGold(int new_gold) { gold = new_gold; }
+
+	void SetName(const std::string& newName) { name = newName; }
 };
