@@ -433,55 +433,67 @@ void AsciiUI::Render()
 
 
 
-CharacterUI::CharacterUI(int x, int y) : AsciiUI(x, y), target(nullptr)
+BattleUnitUI::BattleUnitUI(int x, int y) : AsciiUI(x, y)
 {
 }
 
-void CharacterUI::Render()
+void BattleUnitUI::Update(float delta_time)
 {
-    AsciiUI::Render();
+    if (shake_timer > 0.f) {
+        shake_timer -= delta_time;;
 
-    // 체력 출력
-    if (target) {
-        std::string hp_info = "HP: " + std::to_string(target->GetHealth()) +
-            " / " + std::to_string(target->GetMaxHealth());
-
-        int info_y = start_y + static_cast<int>(contents.size()) + 1;
-        RenderSystem::GetInstance().PrintText(start_x, info_y, hp_info);
+        // 0 이하로 떨어지면 초기화
+        if (shake_timer <= 0.f) {
+            offset_x = 0;
+            offset_y = 0;
+        }
+        // 진행중이라면
+        else {
+            offset_x = RandomUtil::GetRange(-intensity, intensity);
+            offset_y = RandomUtil::GetRange(-intensity, intensity);
+        }
     }
 }
 
-void CharacterUI::SetTarget(const Character* target)
+void BattleUnitUI::Render()
 {
-    this->target = target;
-}
+    int draw_x = start_x + offset_x;
+    int draw_y = start_y + offset_y;
 
-   
-
-MonsterUI::MonsterUI(int x, int y) : AsciiUI(x, y), target(nullptr)
-{
-}
-
-void MonsterUI::Render()
-{
-    AsciiUI::Render();
-
-    // 이름 + 체력 출력
-    if (target) {
-        int info_y = start_y + static_cast<int>(contents.size()) + 1;
-
-        RenderSystem::GetInstance().PrintText(start_x, info_y++, target->GetName());
-
-        std::string hp_info = "HP: " + std::to_string(target->GetHealth()) +
-            " / " + std::to_string(target->GetMaxHealth());
-        RenderSystem::GetInstance().PrintText(start_x, info_y, hp_info);
+    for (int i = 0; i < static_cast<int>(contents.size()); ++i) {
+        RenderSystem::GetInstance().PrintText(draw_x, draw_y + i, contents[i]);
     }
+
+    int info_y = draw_y + static_cast<int>(contents.size()) + 1;
+
+    std::string hp_text = "HP: " + std::to_string(hp) +
+        " / " + std::to_string(max_hp);
+    int percent = std::min(100, static_cast<int>(gauge * 100));
+    std::string gauge_text = "ATB : " + std::to_string(percent) + "%";
+
+    RenderSystem::GetInstance().PrintText(draw_x, info_y++, hp_text);
+    RenderSystem::GetInstance().PrintText(draw_x, info_y, gauge_text);
 }
 
-void MonsterUI::SetTarget(const Monster* target)
+void BattleUnitUI::SetStatus(int hp, int max_hp, float gauge)
 {
-    this->target = target;
+    this->hp = hp;
+    this->max_hp = max_hp;
+    this->gauge = gauge;
 }
+
+void BattleUnitUI::Shake(float duration, int intensity)
+{
+    shake_timer = duration;
+    this->intensity = intensity;
+}
+
+bool BattleUnitUI::IsShake() const
+{
+    return (shake_timer > 0.f);
+}
+
+
 
 // 킬보드 UI 초기화
 KillBoardUI::KillBoardUI(int x, int y, int w, int h) : BorderUI(x, y, w, h)

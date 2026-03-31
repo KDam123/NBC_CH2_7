@@ -8,6 +8,7 @@ BossMonster::BossMonster(int level) : Monster(level)
     maxhealth = static_cast<int>(level * 15 * weight);
     health = maxhealth;
     attack = static_cast<int>(level * 17 * weight);
+    speed = 2.f;
 }
 
 void BossMonster::TakeDamage(int damage) 
