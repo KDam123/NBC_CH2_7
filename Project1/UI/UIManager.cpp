@@ -127,6 +127,12 @@ void UIManager::ToggleItemUI()
     item_ui->ToggleActive();
 }
 
+void UIManager::ToggleKillUI()
+{
+    auto* kill_ui = static_cast<KillBoardUI*>(uis[static_cast<int>(UIType::KillLog)].get());
+    kill_ui->ToggleVisible();
+}
+
 int UIManager::GetItemUICurrentPage() const
 {
     auto* item_ui = static_cast<InventoryUI*>(uis[static_cast<int>(UIType::Inventory)].get());

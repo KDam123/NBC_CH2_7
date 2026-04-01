@@ -13,6 +13,8 @@ void TownScene::Init()
     // 일단 1휴식 = 100골드
     cost = 100;
     SetMenu();
+
+    UIManager::GetInstance().SetVisible(UIType::KillLog, false);
 }
 
 void TownScene::SetMenu()
@@ -55,8 +57,16 @@ void TownScene::ProcessNormalEvent(const Event& e)
 
     case '.':
         Character::GetInstance().GainExp(100);
-        Character::GetInstance().GainGold(555);
         break;
+
+    case ',':
+        Character::GetInstance().GainGold(100);
+        break;
+
+    case 'k':
+        UIManager::GetInstance().ToggleKillUI();;
+        break;
+
          
     default:
         UIManager::GetInstance().AddContent(UIType::Menu, "잘못된 입력입니다.");

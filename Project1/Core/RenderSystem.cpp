@@ -2,6 +2,7 @@
 
 RenderSystem::RenderSystem()
 {
+    SetConsoleTitle(L"Dungeon Rpg");
     SetConsoleOutputCP(CP_UTF8);
 
     // width 에 0을 넣으면 글꼴에 어울리는 폭으로 자동 조절

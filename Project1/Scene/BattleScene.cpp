@@ -59,34 +59,37 @@ void BattleScene::Init()
 	player_ui->LoadAsciiArt("Resource/Player.txt"); 
 
 	// 몬스터 아스키 아트
-	int diff = 15;
-	std::vector<int> position;
+	std::vector<std::pair<int,int>> position;
 	position.reserve(MAX_MONSTER_COUNT);
-	
+
+    int monster_x = 30;
+	int diff = 15;
 	// 몬스터 마리수 별 배치
 	switch (monster_count) { 
 	case 1:
-		position = { center };
+        position = { {monster_x + 20,  center} };
 		break;
 
 	case 2:
-		position = { center - diff / 2 - 1, center + diff / 2 + 1 }; 
+        position = { {monster_x + 20, center - diff}, {monster_x + 20, center + diff / 2} };
 		break;
 
 	case 3:
-		position = { center - diff, center, center + diff };
+        position = { { monster_x + 10, center - diff }, {monster_x + 10, center + diff / 2}, {monster_x + 50, center - diff} };
 		break;
 	}
 
 
 	for (int i = 0; i < monster_count; ++i) {
-		auto monster_ui = std::make_unique<BattleUnitUI>(45, position[i]);
+        auto monster_ui = std::make_unique<BattleUnitUI>(position[i].first, position[i].second);
 		monster_ui->LoadAsciiArt(monsters[i]->GetAsciiArtPath());
 		monster_uis.push_back(std::move(monster_ui));
 	}
 	// ----------------
 
 	SetMenu();
+
+    UIManager::GetInstance().SetVisible(UIType::KillLog, false);
 }
 
 void BattleScene::SetMenu()

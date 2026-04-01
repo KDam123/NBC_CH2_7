@@ -28,6 +28,7 @@ public:
     void NextPageItemUI(); 
     void PrevPageItemUI();
     void ToggleItemUI();
+    void ToggleKillUI();
     int GetItemUICurrentPage() const;
     int GetItemUIItemsPerPage() const;
 

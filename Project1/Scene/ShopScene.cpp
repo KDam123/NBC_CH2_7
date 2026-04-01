@@ -47,6 +47,8 @@ void ShopScene::Init()
 	popup_ui = std::make_unique<ItemConfirmUI>(start_x, start_y, width, height);
 
 	SetMenu();
+
+    UIManager::GetInstance().SetVisible(UIType::KillLog, false);
 }
 
 void ShopScene::SetMenu()

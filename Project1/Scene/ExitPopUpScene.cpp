@@ -21,6 +21,8 @@ void ExitPopUpScene::Init()
 	auto pop_up = std::make_unique<AsciiUI>(x, y);
 	pop_up->LoadAsciiArt("Resource/ExitPopup.txt");
 	scene_uis.push_back(std::move(pop_up));
+
+    UIManager::GetInstance().SetVisible(UIType::KillLog, false);
 }
 
 void ExitPopUpScene::ProcessEvent(const Event& e)

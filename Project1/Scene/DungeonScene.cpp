@@ -19,6 +19,7 @@ void DungeonScene::Init()
 
 
     SetMenu();
+    UIManager::GetInstance().SetVisible(UIType::KillLog, false);
 }
  
 void DungeonScene::SetMenu()
