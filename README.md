@@ -8,6 +8,19 @@ ASCII 아트를 활용한 콘솔 기반 RPG 게임입니다.
 이 프로젝트는 객체지향 설계(OOP) 를 기반으로
 캐릭터, 아이템, 몬스터, UI, 씬(Scene)을 모듈화하여 구현되었습니다.
 
+
+⚙️ 개발 환경
+Language : C++
+IDE : Visual Studio
+Platform : Windows Console
+Standard : C++17 이상
+
+🚀 실행 방법
+프로젝트 클론
+git clone <repository-url>
+Visual Studio에서 프로젝트 열기
+빌드 후 실행
+
 ##🧩 주요 기능
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 🧑‍💻 캐릭터 시스템
@@ -50,8 +63,7 @@ Scene : 게임 상태 관리
 UI : 화면 출력 담당
 Manager : 전체 흐름 제어
 
-
-
+--------------------------------------------------------------------------------------------------------------------------------------------------
 🧠 설계 패턴
 Singleton Pattern
 → GameManager, UIManager, ResourceManager
@@ -67,18 +79,6 @@ Composition
 전투 화면
 인벤토리 UI
 ASCII 아트 기반 캐릭터 및 몬스터
-
-⚙️ 개발 환경
-Language : C++
-IDE : Visual Studio
-Platform : Windows Console
-Standard : C++17 이상
-
-🚀 실행 방법
-프로젝트 클론
-git clone <repository-url>
-Visual Studio에서 프로젝트 열기
-빌드 후 실행
 
 💾 저장 / 로드 기능
 플레이어 상태 저장
