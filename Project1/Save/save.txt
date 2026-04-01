@@ -1,6 +1,6 @@
-﻿[PLAYER]
-minsu
-1 200 200 30 0 500
+[PLAYER]
+asdacm
+2 240 240 40 1 555
 
 0
 0
