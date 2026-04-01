@@ -22,7 +22,7 @@ void ShopScene::Init()
 
 	// -----------
 	// 배경
-	auto bg = std::make_unique<AsciiUI>(0, 0);
+	auto bg = std::make_unique<AsciiUI>(45, 10);
 	bg->LoadAsciiArt("Resource/Shop_BackGround.txt");
 	scene_uis.push_back(std::move(bg));
 
